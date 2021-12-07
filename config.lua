@@ -48,7 +48,7 @@ Config.CheckPoints = {
     end
   },
 
-  --[[{
+  {
     Pos = {x = 271.874, y = -1370.574, z = 30.932},
     Action = function(playerPed, vehicle, setCurrentZoneType)
       DrawMissionText('Go to next point', 5000)
@@ -184,6 +184,6 @@ Config.CheckPoints = {
         DeleteVehicle(vehicle)
       end
     end
-  },]]
+  },
 
 }
