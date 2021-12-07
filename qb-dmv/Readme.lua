@@ -1,0 +1,4 @@
+-- Before installing you must insert the next line into your qb-core/shared.lua unless you plan on letting them get a driver_license upon completion of the theoretical test then ignore the next line
+['permit']						 = {['name'] = 'permit',						['label'] = 'Driving Permit',			['weight'] = 0,			['type'] = 'item',		['image'] = 'id_card.png',				['unique'] = true,		['useable'] = true,		['shouldClose'] = false,   ['combinable'] = nil,   ['description'] = 'A Driving permit to show you can drive a vehicle as long as you have a passenger'},
+
+--If you do plan on letting them take the drivers text and dont want to have a new item, then just go to qb-dmv/server.lua and change all instances of permit to id_card.
