@@ -1,11 +1,11 @@
 QBCore = exports['qb-core']:GetCoreObject()
 
-Citizen.CreateThread(function()
+CreateThread(function()
     while true do
-        Citizen.Wait(10)
+        Wait(10)
         if QBCore == nil then
             TriggerEvent('QBCore:GetObject', function(obj) QBCore = obj end)
-            Citizen.Wait(200)
+            Wait(200)
         end
     end
 end)
@@ -19,8 +19,7 @@ local LastCheckPoint = -1
 local CurrentCheckPoint = 0
 local CurrentZoneType   = nil
 
-RegisterNetEvent('QBCore:Client:OnPlayerLoaded')
-AddEventHandler('QBCore:Client:OnPlayerLoaded', function()
+RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
     isLoggedIn = true
     Player = QBCore.Functions.GetPlayerData()
 end)
@@ -90,8 +89,7 @@ end)
 
 
 -- Event for qb-menu to run to start quiz
-RegisterNetEvent('qb-dmv:startquiz')
-AddEventHandler('qb-dmv:startquiz', function (src)
+RegisterNetEvent('qb-dmv:startquiz', function (src)
     CurrentTest = 'theory'
     SendNUIMessage({
       Wait(10),
@@ -145,9 +143,9 @@ function StopDriveTest(success)
   end
 
 -- Drive test
-Citizen.CreateThread(function()
+CreateThread(function()
   while true do
-    Citizen.Wait(10)
+    Wait(10)
     if CurrentTest == 'drive' then
       local marker = Config.Location['marker']
       local playerPed      = PlayerPedId()
@@ -184,9 +182,9 @@ end)
 
 
 -- Speed / Damage control
---[[Citizen.CreateThread(function()
+--[[CreateThread(function()
     while true do
-      Citizen.Wait(10)
+      Wait(10)
         if CurrentTest == 'drive' then
             local playerPed = PlayerPedId()
             if IsPedInAnyVehicle(playerPed,  false) then
@@ -220,9 +218,9 @@ end)
     end
 end)]]
 
-Citizen.CreateThread(function()
+CreateThread(function()
   while true do
-    Citizen.Wait(10)
+    Wait(10)
       if CurrentTest == 'drive' then
           local playerPed = PlayerPedId()
           if IsPedInAnyVehicle(playerPed,  false) then
@@ -279,9 +277,9 @@ RegisterNUICallback('kick', function(data, cb)
 end)
 
 --Block UI
-Citizen.CreateThread(function ()
+CreateThread(function ()
     while true do
-        Citizen.Wait(10)
+        Wait(10)
         if CurrentTest =='theory' then
             local playerPed = GetPlayerPed(-1)
 
@@ -295,7 +293,7 @@ Citizen.CreateThread(function ()
 end)
 
 --Blips
-Citizen.CreateThread(function ()
+CreateThread(function ()
     blip = AddBlipForCoord(Config.Location['marker'].x, Config.Location['marker'].y, Config.Location['marker'].z)
     SetBlipSprite(blip, Config.Blip.Sprite)
     SetBlipDisplay(blip, Config.Blip.Display)
@@ -308,9 +306,9 @@ Citizen.CreateThread(function ()
 end)
 
 --Marker
-Citizen.CreateThread(function ()
+CreateThread(function ()
     while true do
-        Citizen.Wait(0)
+        Wait(0)
         local drive = Config.DriversTest
         local ped = PlayerPedId()
         local pos = GetEntityCoords(ped)
@@ -414,12 +412,12 @@ CreateThread(function ()
                         icon = 'fas fa-example',
                         label = 'Start Drivers Test $'..Config.Amount['driving'].."",
                       },
-                      {
+                      --[[ {
                         type = "client",
                         event = "qb-dmv:startcdl",
                         icon = "fas fa-example",
                         label = 'Start Drivers Test $'..Config.Amount['cdl'].."",
-                      }
+                      } ]]
                   },
                     distance = 2.5,
               })
