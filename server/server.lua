@@ -1,6 +1,4 @@
 QBCore = exports['qb-core']:GetCoreObject()
-TriggerEvent('QBCore:GetObject', function(obj) QBCore = obj end)
-
 
 --Event to Remove Money from player upon failed attempt at theoritical test
 RegisterNetEvent('qb-dmv:theorypaymentfailed', function()
