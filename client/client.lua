@@ -55,13 +55,13 @@ function OpenMenu2()
         event = 'qb-dmv:startdriver'
       }
     },
-    {
+    --[[{
       header = "Start CDL Drving Test",
       txt = "$"..Config.Amount['cdl'].."",
       params = {
         event = 'qb-dmv:startcdl'
       }
-    }
+    }]]
   })
 end
 -- Event to put in qb-menu to start driving test
@@ -382,7 +382,7 @@ function SetCurrentZoneType(type)
     CurrentZoneType = type
   end
 
------------------Ped Spawner-------------------
+-----------------Ped Spawner------------------- for Config.UseTarget CURRENTLY NOT WORKING(If you manage to make this work the way I'm looking for it too please let me know Bama94#1994)
 CreateThread(function ()
   if Config.UseTarget then
     SpawnPed = Config.Ped
