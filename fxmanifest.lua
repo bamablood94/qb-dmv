@@ -3,7 +3,7 @@ game 'gta5'
 
 
 author 'Bama94'
-description 'Drag Racing Script for QBCore'
+description 'DMV School for QBCore'
 
 client_scripts { 
     "client/client.lua",
