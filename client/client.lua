@@ -1,15 +1,5 @@
 QBCore = exports['qb-core']:GetCoreObject()
 
-CreateThread(function()
-    while true do
-        Wait(10)
-        if QBCore == nil then
-            TriggerEvent('QBCore:GetObject', function(obj) QBCore = obj end)
-            Wait(200)
-        end
-    end
-end)
-
 -------------
 -- Variables --
 -------------
@@ -18,11 +8,6 @@ local CurrentTest = nil
 local LastCheckPoint = -1
 local CurrentCheckPoint = 0
 local CurrentZoneType   = nil
-
-RegisterNetEvent('QBCore:Client:OnPlayerLoaded', function()
-    isLoggedIn = true
-    Player = QBCore.Functions.GetPlayerData()
-end)
 
 -- Opens qb-menu to select dmv options
 function OpenMenu()
