@@ -1,6 +1,10 @@
 fx_version 'cerulean'
 game 'gta5'
 
+
+author 'Bama94'
+description 'Drag Racing Script for QBCore'
+
 client_scripts { 
     "client/client.lua",
     "config.lua"

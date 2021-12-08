@@ -71,7 +71,7 @@ AddEventHandler('qb-dmv:driverpaymentfailed', function ()
     local amount = Config.Amount['driving']/2
     local _source = source
     local Player = QBCore.Functions.GetPlayer(_source)
-    Player.Functions.Removemoney(Config.PaymentType, amount)
+    Player.Functions.RemoveMoney(Config.PaymentType, amount)
     QBCore.Functions.Notify("You paid $"..amount.."","success")
     --TriggerClientEvent('QBCore:Notify', "You failed the Drivers Test. Please Try Again", "error")
 end)
