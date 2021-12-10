@@ -28,7 +28,176 @@ PlayerData.metadata['licences'] = PlayerData.metadata['licences'] or {
         ['permit'] = false
     }
 ```
-also open qb-core/shared.lua and find ```QBShared.StarterItems``` and remove the driver license line.
+Open qb-core/shared.lua and find ```QBShared.StarterItems``` and remove the driver license line.
+
+Open qb-cityhall/client/main.lua and replace
+```
+local idTypes = {
+    ["id_card"] = {
+        label = "ID Card",
+        item = "id_card"
+    },
+    ["driver_license"] = {
+        label = "Drivers License",
+        item = "driver_license"
+    },
+    ["weaponlicense"] = {
+        label = "Firearms License",
+        item = "weaponlicense"
+    }
+}
+```
+
+with
+
+```
+local idTypes = {
+    ["id_card"] = {
+        label = "ID Card",
+        item = "id_card"
+    },
+    ["driver_license"] = {
+        label = "Drivers License",
+        item = "driver_license"
+    },
+    ["weaponlicense"] = {
+        label = "Firearms License",
+        item = "weaponlicense"
+    },
+    ["permit"] = {
+        label = "Drivers Permit",
+        item = "permit"
+    }
+}
+```
+
+and replace
+```
+RegisterNUICallback('requestLicenses', function(data, cb)
+    local PlayerData = QBCore.Functions.GetPlayerData()
+    local licensesMeta = PlayerData.metadata["licences"]
+    local availableLicenses = {}
+
+    for type,_ in pairs(licensesMeta) do
+        if licensesMeta[type] then
+            local licenseType = nil
+            local label = nil
+
+            if type == "driver" then
+                licenseType = "driver_license"
+                label = "Drivers Licence"
+            elseif type == "weapon" then
+                licenseType = "weaponlicense"
+                label = "Firearms License"
+            end
+
+            availableLicenses[#availableLicenses+1] = {
+                idType = licenseType,
+                label = label
+            }
+        end
+    end
+    cb(availableLicenses)
+end)
+```
+with
+```
+RegisterNUICallback('requestLicenses', function(data, cb)
+    local PlayerData = QBCore.Functions.GetPlayerData()
+    local licensesMeta = PlayerData.metadata["licences"]
+    local availableLicenses = {}
+
+    for type,_ in pairs(licensesMeta) do
+        if licensesMeta[type] then
+            local licenseType = nil
+            local label = nil
+
+            if type == "driver" then
+                licenseType = "driver_license"
+                label = "Drivers Licence"
+            elseif type == "weapon" then
+                licenseType = "weaponlicense"
+                label = "Firearms License"
+            elseif type == "permit" then
+                licenseType = "permit"
+                label = "Drivers Permit"
+            end
+
+            availableLicenses[#availableLicenses+1] = {
+                idType = licenseType,
+                label = label
+            }
+        end
+    end
+    cb(availableLicenses)
+end)
+```
+
+And last go to qb-cityhall/server/main.lua and replace:
+```
+RegisterServerEvent('qb-cityhall:server:requestId')
+AddEventHandler('qb-cityhall:server:requestId', function(identityData)
+    local src = source
+    local Player = QBCore.Functions.GetPlayer(src)
+    local info = {}
+    if identityData.item == "id_card" then
+        info.citizenid = Player.PlayerData.citizenid
+        info.firstname = Player.PlayerData.charinfo.firstname
+        info.lastname = Player.PlayerData.charinfo.lastname
+        info.birthdate = Player.PlayerData.charinfo.birthdate
+        info.gender = Player.PlayerData.charinfo.gender
+        info.nationality = Player.PlayerData.charinfo.nationality
+    elseif identityData.item == "driver_license" then
+        info.firstname = Player.PlayerData.charinfo.firstname
+        info.lastname = Player.PlayerData.charinfo.lastname
+        info.birthdate = Player.PlayerData.charinfo.birthdate
+        info.type = "Class C Driver License"
+    elseif identityData.item == "weaponlicense" then
+        info.firstname = Player.PlayerData.charinfo.firstname
+        info.lastname = Player.PlayerData.charinfo.lastname
+        info.birthdate = Player.PlayerData.charinfo.birthdate
+    end
+
+    Player.Functions.AddItem(identityData.item, 1, nil, info)
+
+    TriggerClientEvent('inventory:client:ItemBox', src, QBCore.Shared.Items[identityData.item], 'add')
+end)
+```
+with
+
+```
+RegisterNetEvent('qb-cityhall:server:requestId', function(identityData)
+    local src = source
+    local Player = QBCore.Functions.GetPlayer(src)
+    local info = {}
+    if identityData.item == "id_card" then
+        info.citizenid = Player.PlayerData.citizenid
+        info.firstname = Player.PlayerData.charinfo.firstname
+        info.lastname = Player.PlayerData.charinfo.lastname
+        info.birthdate = Player.PlayerData.charinfo.birthdate
+        info.gender = Player.PlayerData.charinfo.gender
+        info.nationality = Player.PlayerData.charinfo.nationality
+    elseif identityData.item == "driver_license" then
+        info.firstname = Player.PlayerData.charinfo.firstname
+        info.lastname = Player.PlayerData.charinfo.lastname
+        info.birthdate = Player.PlayerData.charinfo.birthdate
+        info.type = "Class C Driver License"
+    elseif identityData.item == "weaponlicense" then
+        info.firstname = Player.PlayerData.charinfo.firstname
+        info.lastname = Player.PlayerData.charinfo.lastname
+        info.birthdate = Player.PlayerData.charinfo.birthdate
+    elseif identityData.item == "permit" then
+        info.firstname = Player.PlayerData.charinfo.firstname
+        info.lastname = Player.PlayerData.charinfo.lastname
+        info.birthdate = Player.PlayerData.charinfo.birthdate
+        info.type = "Drivers Permit"
+    end
+
+    Player.Functions.AddItem(identityData.item, 1, nil, info)
+    TriggerClientEvent('inventory:client:ItemBox', src, QBCore.Shared.Items[identityData.item], 'add')
+    Player.Functions.RemoveMoney("cash", 50)
+end)
+```
 
 # New Details
 
