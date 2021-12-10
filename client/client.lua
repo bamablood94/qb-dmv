@@ -1,14 +1,16 @@
-QBCore = exports['qb-core']:GetCoreObject()
+if Config.Version == 'old' then
+  QBCore = nil
 
-Citizen.CreateThread(function()
-    while true do
-        Citizen.Wait(10)
-        if QBCore == nil then
-            TriggerEvent('QBCore:GetObject', function(obj) QBCore = obj end)
-            Citizen.Wait(200)
-        end
-    end
-end)
+  CreateThread(function()
+      while QBCore == nil do
+          TriggerEvent("QBCore:GetObject", function(obj)QBCore = obj end)
+          Citizen.Wait(200)
+      end
+  end)
+
+elseif Config.Version == 'new' then
+  QBCore = exports['qb-core']:GetCoreObject()
+end
 
 -------------
 -- Variables --

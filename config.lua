@@ -1,5 +1,7 @@
 Config = {}
 
+Config.Version = 'new'                                      -- 'new' or 'old' ONLY! If you get a attempt to index nil value (field 'QBCore') then change this.
+
 Config.PaymentType = 'cash'                                 -- 'cash' or 'bank' What account to use for payment
 Config.DriversTest = true                                   --[[False = Do not have to take the drivers test to get a Drivers License(will give drivers_license after 
                                                                 questionairre.) True = Requires you to take Drivers Test to get driver_license]]

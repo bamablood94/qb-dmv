@@ -1,5 +1,11 @@
-QBCore = exports['qb-core']:GetCoreObject()
-TriggerEvent('QBCore:GetObject', function(obj) QBCore = obj end)
+if Config.Version == 'old' then
+    QBCore = nil
+
+    TriggerEvent('QBCore:GetObject', function(obj)QBCore = obj end)
+
+elseif Config.Version == 'new' then
+    QBCore = exports['qb-core']:GetCoreObject()
+end
 
 --Event to Remove Money from player upon failed attempt at theoritical test
 RegisterServerEvent('qb-dmv:theorypaymentfailed')
