@@ -1,7 +1,6 @@
 fx_version 'cerulean'
 game 'gta5'
 
-
 author 'Bama94'
 description 'DMV School for QBCore'
 

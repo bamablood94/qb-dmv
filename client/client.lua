@@ -36,7 +36,10 @@ function OpenMenu()
         header = "Start Theoretical Test",
         txt = "$"..Config.Amount['theoretical'].."",
         params = {
-          event = 'qb-dmv:startquiz'
+          event = 'qb-dmv:startquiz',
+          args = {
+            CurrentTest = 'theory'
+          }
         }
       }
     })
@@ -52,16 +55,19 @@ function OpenMenu2()
       header = "Start Driving Test",
       txt = "$"..Config.Amount['driving'].."",
       params = {
-        event = 'qb-dmv:startdriver'
+        event = 'qb-dmv:startdriver',
+        args = {
+          CurrentTest = 'drive'
+        }
       }
     },
-    --[[{
+    {
       header = "Start CDL Drving Test",
       txt = "$"..Config.Amount['cdl'].."",
       params = {
         event = 'qb-dmv:startcdl'
       }
-    }]]
+    }
   })
 end
 -- Event to put in qb-menu to start driving test
@@ -91,7 +97,7 @@ end)
 
 -- Event for qb-menu to run to start quiz
 RegisterNetEvent('qb-dmv:startquiz')
-AddEventHandler('qb-dmv:startquiz', function (src)
+AddEventHandler('qb-dmv:startquiz', function ()
     CurrentTest = 'theory'
     SendNUIMessage({
       Wait(10),
@@ -129,6 +135,7 @@ function StopDriveTest(success)
       TriggerServerEvent('qb-dmv:driverpaymentpassed')
       QBCore.Functions.Notify('You passed the Drving Test!')
       QBCore.Functions.DeleteVehicle(veh)
+      CurrentTest = nil
     elseif success == false then
       TriggerServerEvent('qb-dmv:driverpaymentfailed')
       QBCore.Functions.Notify('You Failed the Driving Test!')
@@ -159,7 +166,6 @@ Citizen.CreateThread(function()
         end
         CurrentTest = nil
         StopDriveTest(true)
-        --QBCore.Functions.Notify('Drving Test Complete')
       else
         if CurrentCheckPoint ~= LastCheckPoint then
           if DoesBlipExist(CurrentBlip) then
@@ -184,42 +190,6 @@ end)
 
 
 -- Speed / Damage control
---[[Citizen.CreateThread(function()
-    while true do
-      Citizen.Wait(10)
-        if CurrentTest == 'drive' then
-            local playerPed = PlayerPedId()
-            if IsPedInAnyVehicle(playerPed,  false) then
-                local vehicle      = GetVehiclePedIsIn(playerPed,  false)
-                local speed        = GetEntitySpeed(vehicle) * Config.SpeedMultiplier
-                local tooMuchSpeed = false
-                for k,v in pairs(Config.SpeedLimits) do
-                    if CurrentZoneType == k and speed > v then
-                    tooMuchSpeed = true
-                        if not IsAboveSpeedLimit then
-                            DriveErrors       = DriveErrors + 1
-                            IsAboveSpeedLimit = true
-                            QBCore.Functions.Notify('Driving too fast',"error")
-                            QBCore.Functions.Notify("Errors:"..tostring(DriveErrors).."/" ..Config.MaxErrors.. "", "error")
-                        end
-                    end
-                end
-                if not tooMuchSpeed then
-                    IsAboveSpeedLimit = false
-                end
-                local health = GetVehicleBodyHealth(vehicle)
-                if health < LastVehicleHealth then
-                    DriveErrors = DriveErrors + 1
-                    --ESX.ShowNotification(_U('you_damaged_veh'))
-                    QBCore.Functions.Notify('You Damaged the Vehicle')
-                    QBCore.Functions.Notify("Errors:"..tostring(DriveErrors).."/" ..Config.MaxErrors.. "", "error")
-                    LastVehicleHealth = health
-                end 
-            end
-        end
-    end
-end)]]
-
 Citizen.CreateThread(function()
   while true do
     Citizen.Wait(10)
@@ -236,7 +206,7 @@ Citizen.CreateThread(function()
                           DriveErrors       = DriveErrors + 1
                           IsAboveSpeedLimit = true
                           QBCore.Functions.Notify('Driving too fast',"error")
-                          QBCore.Functions.Notify("Errors:"..tostring(DriveErrors).."/" ..Config.MaxErrors.. "", "error")
+                          QBCore.Functions.Notify("Errors:"..tostring(DriveErrors).."/" ..Config.MaxErrors, "error")
                       end
                   end
               end
@@ -247,7 +217,7 @@ Citizen.CreateThread(function()
               if health < LastVehicleHealth then
                   DriveErrors = DriveErrors + 1
                   QBCore.Functions.Notify('You Damaged the Vehicle')
-                  QBCore.Functions.Notify("Errors:"..tostring(DriveErrors).."/" ..Config.MaxErrors.. "", "error")
+                  QBCore.Functions.Notify("Errors:"..tostring(DriveErrors).."/" ..Config.MaxErrors, "error")
                   LastVehicleHealth = health
               end
               if DriveErrors >= Config.MaxErrors then
@@ -323,29 +293,28 @@ Citizen.CreateThread(function ()
             }
             DrawText3Ds(marker['x'], marker['y'], marker['z'], "[E] Open Menu")
             if dist <= 1.5 then
-              if IsControlJustReleased(0, 46) then
-                QBCore.Functions.TriggerCallback('qb-dmv:server:menu', function (HasItems1)
-                    if HasItems1 == false then
-                        QBCore.Functions.TriggerCallback('qb-dmv:server:menu2', function (HasItems2)
-                            if HasItems2 then
-                                if drive then
-                                  if CurrentTest == 'drive' then
-                                    QBCore.Functions.Notify("You\'re already taking the driving test", "error")
-                                  else
-                                    OpenMenu2()
-                                    CurrentTest = 'drive'
+              if CurrentTest ~= 'drive' then
+                if IsControlJustReleased(0, 46) then
+                  QBCore.Functions.TriggerCallback('qb-dmv:server:menu', function (permit)
+                      if permit == false then
+                          QBCore.Functions.TriggerCallback('qb-dmv:server:menu2', function (license)
+                              if license then
+                                  if drive then
+                                      Wait(10)
+                                      OpenMenu2()
                                   end
-                                else
-                                  QBCore.Functions.Notify("You already have your Driver\'s License")
-                                end
-                            else
-                              QBCore.Functions.Notify("You already took your tests!")
-                            end
-                        end)
-                    else
-                      OpenMenu()
-                    end
-                end)
+                              else
+                                QBCore.Functions.Notify("You already took your tests! Go to City Hall to buy your License.")
+                              end
+                          end)
+                      else
+                        Wait(10)
+                        OpenMenu()
+                      end
+                  end)
+                end
+              elseif CurrentTest == 'drive' and IsControlJustReleased(0, 46) then
+                QBCore.Functions.Notify("You\'re already Taking the Drivers Test.")
               end
             end
         end
@@ -382,7 +351,7 @@ function SetCurrentZoneType(type)
     CurrentZoneType = type
   end
 
------------------Ped Spawner------------------- for Config.UseTarget CURRENTLY NOT WORKING(If you manage to make this work the way I'm looking for it too please let me know Bama94#1994)
+-----------------Ped Spawner-------------------
 CreateThread(function ()
   if Config.UseTarget then
     SpawnPed = Config.Ped

@@ -5,8 +5,9 @@ Config.DriversTest = true     --False = Do not have to take the drivers test to 
                               --questionairre.) True = Requires you to take Drivers Test to get driver_license
 Config.SpeedMultiplier = 2.236936  --KM/H = 3.6 MPH = 2.236936
 Config.MaxErrors       = 10
-Config.UseTarget       = false   --(recommend leaving false until future update) Gotta fix the target menu to auto change without having to restart qb-target. True will use qb-target instead of qb-menu False will use qb-menu
+Config.UseTarget       = false   --CURRENTLY NOT WORKING! (recommend leaving false until future update) Gotta fix the target menu to auto change without having to restart qb-target. True will use qb-target instead of qb-menu False will use qb-menu
 Config.Ped = 's_m_y_cop_01' --Will Spawn this ped for qb-target if Config.UseTarget is true
+Config.GiveItem = true
 
 Config.Amount = {
     ['theoretical'] = 50,       --theoretical test payment amount(If Config.DriversTest = false then the theoritical test will go to the drivers test amount.)
@@ -29,8 +30,8 @@ Config.Blip = {
 }
 
 Config.VehicleModels = {
-  driver = 'adder',
-  cdl = 'stockade'
+  driver = 'adder',         -- Car to spawn with Driver's Test
+  cdl = 'stockade'          -- Truck to spawn with CDL Test
 }
 
 Config.SpeedLimits = {
