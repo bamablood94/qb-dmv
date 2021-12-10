@@ -18,7 +18,7 @@ PlayerData.metadata['licences'] = PlayerData.metadata['licences'] or {
         ['business'] = false,
         ['weapon'] = false,
     }
-				```    
+```
 and replace with:
 ```
 PlayerData.metadata['licences'] = PlayerData.metadata['licences'] or {
@@ -27,7 +27,7 @@ PlayerData.metadata['licences'] = PlayerData.metadata['licences'] or {
         ['weapon'] = false,
         ['permit'] = false
     }
-				```
+```
 also open qb-core/shared.lua and find QBShared.StarterItems and remove the driver license line.
 
 # New Details
