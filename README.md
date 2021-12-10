@@ -8,7 +8,7 @@ Insert the below item into the shared.lua of qb-core
 ```
 
 If you want to give players an id_card instead then go into the server.lua and replace any instance of permit to id_card and don't worry about adding the above line.
-Update:
+Update:(you will have to add the license to the table for exsisting players as it wont auto update.) -- atleast to my knowledge
 
 Open qb-core/server/players.lua and find:
 
