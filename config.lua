@@ -1,26 +1,26 @@
 Config = {}
 
-Config.PaymentType = 'cash'   -- 'cash' or 'bank' What account to use for payment
-Config.DriversTest = true     --False = Do not have to take the drivers test to get a Drivers License(will give drivers_license after 
-                              --questionairre.) True = Requires you to take Drivers Test to get driver_license
-Config.SpeedMultiplier = 2.236936  --KM/H = 3.6 MPH = 2.236936
+Config.PaymentType = 'cash'                                 -- 'cash' or 'bank' What account to use for payment
+Config.DriversTest = true                                   --[[False = Do not have to take the drivers test to get a Drivers License(will give drivers_license after 
+                                                                questionairre.) True = Requires you to take Drivers Test to get driver_license]]
+Config.SpeedMultiplier = 2.236936                           --KM/H = 3.6 MPH = 2.236936
 Config.MaxErrors       = 10
-Config.UseTarget       = false   --CURRENTLY NOT WORKING! (recommend leaving false until future update) Gotta fix the target menu to auto change without having to restart qb-target. True will use qb-target instead of qb-menu False will use qb-menu
-Config.Ped = 's_m_y_cop_01' --Will Spawn this ped for qb-target if Config.UseTarget is true
+Config.UseTarget       = false                              --CURRENTLY NOT WORKING! (recommend leaving false until future update) Gotta fix the target menu to auto change without having to restart qb-target. True will use qb-target instead of qb-menu False will use qb-menu
+Config.Ped = 's_m_y_cop_01'                                 --Will Spawn this ped for qb-target if Config.UseTarget is true
 Config.GiveItem = true
 
 Config.Amount = {
-    ['theoretical'] = 50,       --theoretical test payment amount(If Config.DriversTest = false then the theoritical test will go to the drivers test amount.)
-    ['driving']     = 150,       --Drivers Test Payment Amount
-    ['cdl']         = 250       --CDL Test Payment Amount
+    ['theoretical'] = 50,                                   --theoretical test payment amount(If Config.DriversTest = false then the theoritical test will go to the drivers test amount.)
+    ['driving']     = 150,                                  --Drivers Test Payment Amount
+    ['cdl']         = 250                                   --CDL Test Payment Amount
 }
 
 Config.Location = {
-    ['ped'] = vector4(214.56, -1400.25, 30.58, 323.03), --Location of Ped to spawn if Config.UseTarget is true
-    ['marker'] = vector3(215.31, -1398.99, 30.58),   --Location of Blip and marker(Currently not working)
-    ['spawn'] = vector4(236.08, -1401.41, 30.58, 265.06) -- Location to spawn vehicle upon starting Drivers Test
+    ['ped'] = vector4(214.56, -1400.25, 30.58, 323.03),     --Location of Ped to spawn if Config.UseTarget is true
+    ['marker'] = vector3(215.31, -1398.99, 30.58),          --Location of Blip and marker(Currently not working)
+    ['spawn'] = vector4(236.08, -1401.41, 30.58, 265.06)    -- Location to spawn vehicle upon starting Drivers Test
 }
-Config.Blip = {
+Config.Blip = {                                             -- Blip Config
   Sprite = 380,
   Display = 4,
   Color = 1,
@@ -30,17 +30,17 @@ Config.Blip = {
 }
 
 Config.VehicleModels = {
-  driver = 'adder',         -- Car to spawn with Driver's Test
-  cdl = 'stockade'          -- Truck to spawn with CDL Test
+  driver = 'adder',                                         -- Car to spawn with Driver's Test
+  cdl = 'stockade'                                          -- Truck to spawn with CDL Test
 }
 
-Config.SpeedLimits = {
+Config.SpeedLimits = {                                      -- Speed Limits in each zone
   residence = 50,
   town      = 80,
   freeway   = 120
 }
 
-Config.CheckPoints = {
+Config.CheckPoints = {                                      -- Each Cheackpoint for the Drivers Test
 
   {
     Pos = {x = 255.139, y = -1400.731, z = 29.537},
