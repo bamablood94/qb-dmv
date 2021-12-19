@@ -236,3 +236,4 @@ QBCore Discord: https://discord.gg/pKUZvJBxq4
 # Credits
 
 ConnorTheDev#5982 - Credit for finding the way to add to the database.(I was unaware of this method)
+cambrey1#2143 - Credit for sending me the files to find the reason behind the UI getting stuck on screen after failing test and trying again.
