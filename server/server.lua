@@ -1,11 +1,4 @@
-if Config.Version == 'old' then
-    QBCore = nil
-
-    TriggerEvent('QBCore:GetObject', function(obj)QBCore = obj end)
-
-elseif Config.Version == 'new' then
-    QBCore = exports['qb-core']:GetCoreObject()
-end
+QBCore = exports['qb-core']:GetCoreObject()
 
 --Event to Remove Money from player upon failed attempt at theoritical test
 RegisterServerEvent('qb-dmv:theorypaymentfailed')
@@ -91,7 +84,7 @@ AddEventHandler('qb-dmv:driverpaymentfailed', function ()
     local amount = Config.Amount['driving']/2
     local _source = source
     local Player = QBCore.Functions.GetPlayer(_source)
-    Player.Functions.Removemoney(Config.PaymentType, amount)
+    Player.Functions.RemoveMoney(Config.PaymentType, amount)
     QBCore.Functions.Notify("You paid $"..amount.."","success")
 end)
 

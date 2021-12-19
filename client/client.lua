@@ -1,16 +1,4 @@
-if Config.Version == 'old' then
-  QBCore = nil
-
-  CreateThread(function()
-      while QBCore == nil do
-          TriggerEvent("QBCore:GetObject", function(obj)QBCore = obj end)
-          Citizen.Wait(200)
-      end
-  end)
-
-elseif Config.Version == 'new' then
-  QBCore = exports['qb-core']:GetCoreObject()
-end
+QBCore = exports['qb-core']:GetCoreObject()
 
 -------------
 -- Variables --
@@ -114,7 +102,6 @@ end)
 
 -- When stopping/finishing theoritical test
 function StopTheoryTest(success) 
-    local Player = QBCore.Functions.GetPlayerData(src)
     CurrentTest = nil
     SendNUIMessage({
       openQuestion = false
@@ -237,17 +224,17 @@ RegisterNUICallback('question', function(data, cb)
     SendNUIMessage({
       openSection = 'question'
     })
-    cb('OK')
+    cb()
 end)
 
 RegisterNUICallback('close', function(data, cb)
     StopTheoryTest(true)
-    cb('OK')
+    cb()
 end)
 
 RegisterNUICallback('kick', function(data, cb)
     StopTheoryTest(false)
-    cb('OK')
+    cb()
 end)
 
 --Block UI
