@@ -28,7 +28,7 @@ PlayerData.metadata['licences'] = PlayerData.metadata['licences'] or {
         ['permit'] = false
     }
 ```
-Open qb-core/shared.lua and find ```QBShared.StarterItems``` and remove the driver license line.
+Open qb-core/shared/main.lua and find ```QBShared.StarterItems``` and remove the driver license line.
 
 Open qb-cityhall/client/main.lua and replace
 ```

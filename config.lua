@@ -5,9 +5,18 @@ Config.DriversTest = true                                   --[[False = Do not h
                                                                 questionairre.) True = Requires you to take Drivers Test to get driver_license]]
 Config.SpeedMultiplier = 2.236936                           --KM/H = 3.6 MPH = 2.236936
 Config.MaxErrors       = 10
-Config.UseTarget       = false                              --CURRENTLY NOT WORKING! (recommend leaving false until future update) Gotta fix the target menu to auto change without having to restart qb-target. True will use qb-target instead of qb-menu False will use qb-menu
-Config.Ped = 's_m_y_cop_01'                                 --Will Spawn this ped for qb-target if Config.UseTarget is true
-Config.GiveItem = true
+Config.UseTarget       = true                              --CURRENTLY NOT WORKING! (recommend leaving false until future update) Gotta fix the target menu to auto change without having to restart qb-target. True will use qb-target instead of qb-menu False will use qb-menu
+--Config.Ped = 's_m_y_cop_01'
+Config.Ped = {                                              --Will Spawn this ped for qb-target if Config.UseTarget is true
+  {
+		model = 's_m_y_cop_01',                                 -- Ped to spawn
+		coords = vector4(214.3, -1400.02, 30.58, 324.41),       -- Coordinates to spawn ped at
+		gender = 'male',                                        -- Pretty obvious
+    gendernumber = 4                                        -- 4 = male 5 = female
+	},
+}
+Config.FadeIn = true                                        -- Do you want to ped to fade in as you get closer?
+Config.GiveItem = true                                      -- true = will give item after passing. False = will require players to go to city hall to accuire item
 
 Config.Amount = {
     ['theoretical'] = 50,                                   --theoretical test payment amount(If Config.DriversTest = false then the theoritical test will go to the drivers test amount.)
@@ -17,7 +26,7 @@ Config.Amount = {
 
 Config.Location = {
     ['ped'] = vector4(214.56, -1400.25, 30.58, 323.03),     --Location of Ped to spawn if Config.UseTarget is true
-    ['marker'] = vector3(215.31, -1398.99, 30.58),          --Location of Blip and marker(Currently not working)
+    ['marker'] = vector3(215.31, -1398.99, 30.58),          --Location of Blip and marker
     ['spawn'] = vector4(236.08, -1401.41, 30.58, 265.06)    -- Location to spawn vehicle upon starting Drivers Test
 }
 Config.Blip = {                                             -- Blip Config

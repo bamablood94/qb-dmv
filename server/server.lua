@@ -26,7 +26,7 @@ AddEventHandler('qb-dmv:theorypaymentpassed', function()
         if Config.GiveItem then
             Player.Functions.AddItem('permit', 1, nil, info)
             TriggerClientEvent('QBCore:Notify', "You passed and got your Permit", "success")
-            TriggerClientEvent('inventory:client:ItemBox', _source, QBCore.Shared.Items['driver_license'], 'add')
+            TriggerClientEvent('inventory:client:ItemBox', _source, QBCore.Shared.Items['permit'], 'add')
         else
             TriggerClientEvent('QBCore:Notify', "You passed the test. Go to City to get your Permit")
         end
@@ -58,7 +58,7 @@ AddEventHandler('qb-dmv:driverpaymentpassed', function ()
         local info = {}
         local _source = source
         local Player = QBCore.Functions.GetPlayer(_source)
-        local licenseTable = Player.PlayerData.metadata['licences']
+        local licenseTable = Player.PlayerData.metadata['licene']
         info.citizenid = Player.PlayerData.citizenid
         info.firstname = Player.PlayerData.charinfo.firstname
         info.lastname = Player.PlayerData.charinfo.lastname
@@ -91,7 +91,7 @@ end)
 QBCore.Functions.CreateCallback('qb-dmv:server:menu', function(source, cb)
     local src = source
     local Player = QBCore.Functions.GetPlayer(src)
-    local licenseTable = Player.PlayerData.metadata["licences"]
+    local licenseTable = Player.PlayerData.metadata['licences']
     if licenseTable['permit'] == true then
         cb(false)
     else
@@ -102,7 +102,7 @@ end)
 QBCore.Functions.CreateCallback('qb-dmv:server:menu2', function(source, cb)
     local src = source
     local Player = QBCore.Functions.GetPlayer(src)
-    local licenseTable = Player.PlayerData.metadata["licences"]
+    local licenseTable = Player.PlayerData.metadata['licences']
     if licenseTable['driver'] then
         cb(false)
     elseif licenseTable['permit'] and licenseTable['driver'] == false then

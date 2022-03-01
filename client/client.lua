@@ -8,6 +8,7 @@ local CurrentTest = nil
 local LastCheckPoint = -1
 local CurrentCheckPoint = 0
 local CurrentZoneType   = nil
+local spawnedPeds = {}
 
 RegisterNetEvent('QBCore:Client:OnPlayerLoaded')
 AddEventHandler('QBCore:Client:OnPlayerLoaded', function()
@@ -341,63 +342,190 @@ function SetCurrentZoneType(type)
   end
 
 -----------------Ped Spawner-------------------
-CreateThread(function ()
-  if Config.UseTarget then
-    SpawnPed = Config.Ped
-    exports['qb-target']:SpawnPed({
-      model = SpawnPed,
-      coords = vector4(Config.Location['ped'].x, Config.Location['ped'].y, Config.Location['ped'].z, Config.Location['ped'].w),
-      minusOne = true,
-      freeze = true,
-      invincible = true,
-      blockevents = true,
-      scenario = 'WORLD_HUMAN_CLIPBOARD',
-      target = {
-        options = {}
-      }
-    })
-  else
-    DeletePed(SpawnPed)
-  end
-  if Config.UseTarget then
-    QBCore.Functions.TriggerCallback('qb-dmv:server:menu', function (HasItems1)
-      if HasItems1 == false then
-          QBCore.Functions.TriggerCallback('qb-dmv:server:menu2', function (HasItems2)
-              if HasItems2 then
-                exports['qb-target']:AddTargetModel(SpawnPed, {       --Drivers Test Menu
-                  options = {
-                      {
-                        type = "client",
-                        event = "qb-dmv:startdriver",
-                        icon = 'fas fa-example',
-                        label = 'Start Drivers Test $'..Config.Amount['driving'].."",
-                      },
-                      {
-                        type = "client",
-                        event = "qb-dmv:startcdl",
-                        icon = "fas fa-example",
-                        label = 'Start Drivers Test $'..Config.Amount['cdl'].."",
-                      }
-                  },
-                    distance = 2.5,
-              })
-              else
-                QBCore.Functions.Notify("You already took your tests!")
+--[[Citizen.CreateThread(function ()
+  while true do
+      Citizen.Wait(0)
+      local drive = Config.DriversTest
+      local ped = PlayerPedId()
+      local pos = GetEntityCoords(ped)
+      local dist = GetDistanceBetweenCoords(pos,Config.Location['marker'].x, Config.Location['marker'].y, Config.Location['marker'].z, true)
+      if Config.UseTarget then
+        for k,v in pairs(Config.Ped) do
+          local distance = #(pos - v.coords.xyz)
+          if distance < 20 and not spawnedPeds[k] then
+            local spawnedPed = NearPed(v.model, v.coords, v.gender, v.animDict, v.animName, v.scenario)
+            spawnedPeds[k] = { spawnedPed = spawnedPed }
+          end
+          if distance >= 20 and spawnedPeds[k] then
+            if Config.FadeIn then
+              for i = 255, 0, -51 do
+                Citizen.Wait(50)
+                SetEntityAlpha(spawnedPeds[k].spawnedPed, i, false)
               end
+            end
+            DeletePed(spawnedPeds[k].spawnedPed)
+            spawnedPeds[k] = nil
+          end
+        end
+        if CurrentTest ~= 'drive' then
+          QBCore.Functions.TriggerCallback('qb-dmv:server:menu', function (permit)
+            if permit == false then
+              QBCore.Functions.TriggerCallback('qb-dmv:server:menu2', function (license)
+                if license then
+                  if drive then
+                    local models = {
+                      's_m_y_cop_01'
+                    }
+                    exports['qb-target']:RemoveTargetModel(models, 'Take Theoretical Test')
+                    exports['qb-target']:AddTargetModel(models, {
+                      options = {
+                        {
+                          type = "client",
+                          event = "qb-dmw:startdriver",
+                          icon = 'fas fa-clipboard',
+                          label = 'Take Drivers Test',
+                        }
+                      },
+                      distance = 2.5,
+                    })
+                  else
+                    QBCore.Functions.Notify('You don\'t have to take the driving test.')
+                    QBCore.Functions.Notify('If you don\'t have your license, please visit the city hall')
+                  end
+                else
+                  exports['qb-target']:RemoveTargetModel(models, 'Take Drivers Test')
+                end
+              end)
+            else
+              local models = {
+                's_m_y_cop_01'
+              }
+              exports['qb-target']:AddTargetModel(models, {
+                options = {
+                  {
+                    type = "client",
+                    event = "qb-dmv:startquiz",
+                    icon = 'fas fa-quiz',
+                    label = 'Take Theoretical Test'
+                  }
+                },
+                distance = 2.5
+              })
+            end
           end)
+        else
+          QBCore.FunctionsQBCore.Functions.Notify("You\'re already Taking the Drivers Test.")
+        end
       else
-        exports['qb-target']:AddTargetModel(SpawnPed, {     --Theoretical Test Menu
-          options = {
-              {
-                type = "client",
-                event = "qb-dmv:startquiz",
-                icon = 'fas fa-example',
-                label = 'Start Theoretical Test $'..Config.Amount['theoretical'].."",
-              },
-          },
-            distance = 2.5,
-      })
+        if dist <= 6.0 then
+          local marker ={
+              ['x'] = Config.Location['marker'].x,
+              ['y'] = Config.Location['marker'].y,
+              ['z'] = Config.Location['marker'].z
+          }
+          DrawText3Ds(marker['x'], marker['y'], marker['z'], "[E] Open Menu")
+          if dist <= 1.5 then
+            if CurrentTest ~= 'drive' then
+              if IsControlJustReleased(0, 46) then
+                QBCore.Functions.TriggerCallback('qb-dmv:server:menu', function (permit)
+                    if permit == false then
+                        QBCore.Functions.TriggerCallback('qb-dmv:server:menu2', function (license)
+                            if license then
+                                if drive then
+                                    Wait(10)
+                                    OpenMenu2()
+                                end
+                            else
+                              QBCore.Functions.Notify("You already took your tests! Go to City Hall to buy your License.")
+                            end
+                        end)
+                    else
+                      Wait(10)
+                      OpenMenu()
+                    end
+                end)
+              end
+            elseif CurrentTest == 'drive' and IsControlJustReleased(0, 46) then
+              QBCore.Functions.Notify("You\'re already Taking the Drivers Test.")
+            end
+          end
       end
-    end)
+      end
   end
-end)
+end)]]
+
+--PedSpawning
+--[[Citizen.CreateThread(function()
+	while true do
+		Citizen.Wait(500)
+		for k,v in pairs(Config.Ped) do
+			local playerCoords = GetEntityCoords(PlayerPedId())
+			local distance = #(playerCoords - v.coords.xyz)
+
+			if distance < 20 and not spawnedPeds[k] then
+				local spawnedPed = NearPed(v.model, v.coords, v.gender, v.animDict, v.animName, v.scenario)
+				spawnedPeds[k] = { spawnedPed = spawnedPed }
+			end
+
+			if distance >= 20 and spawnedPeds[k] then
+				if Config.FadeIn then
+					for i = 255, 0, -51 do
+						Citizen.Wait(50)
+						SetEntityAlpha(spawnedPeds[k].spawnedPed, i, false)
+					end
+				end
+				DeletePed(spawnedPeds[k].spawnedPed)
+				spawnedPeds[k] = nil
+			end
+		end
+	end
+end)]]
+
+function NearPed(model, coords, animDict, animName, scenario)
+	RequestModel(model)
+	while not HasModelLoaded(model) do
+		Citizen.Wait(50)
+	end
+
+	if Config.MinusOne then
+		spawnedPed = CreatePed(Config.Ped.gendernumber, model, coords.x, coords.y, coords.z - 1.0, coords.w, false, true)
+	else
+		spawnedPed = CreatePed(Config.Ped.gendernumber, model, coords.x, coords.y, coords.z, coords.w, false, true)
+	end
+
+	SetEntityAlpha(spawnedPed, 0, false)
+
+	if Config.Frozen then
+		FreezeEntityPosition(spawnedPed, true)
+	end
+
+	if Config.Invincible then
+		SetEntityInvincible(spawnedPed, true)
+	end
+
+	if Config.Stoic then
+		SetBlockingOfNonTemporaryEvents(spawnedPed, true)
+	end
+
+	if animDict and animName then
+		RequestAnimDict(animDict)
+		while not HasAnimDictLoaded(animDict) do
+			Citizen.Wait(50)
+		end
+
+		TaskPlayAnim(spawnedPed, animDict, animName, 8.0, 0, -1, 1, 0, 0, 0)
+	end
+
+    if scenario then
+        TaskStartScenarioInPlace(spawnedPed, scenario, 0, true)
+    end
+
+	if Config.FadeIn then
+		for i = 0, 255, 51 do
+			Citizen.Wait(50)
+			SetEntityAlpha(spawnedPed, i, false)
+		end
+	end
+
+	return spawnedPed
+end
