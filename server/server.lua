@@ -1,8 +1,7 @@
 QBCore = exports['qb-core']:GetCoreObject()
 
 --Event to Remove Money from player upon failed attempt at theoritical test
-RegisterServerEvent('qb-dmv:theorypaymentfailed')
-AddEventHandler('qb-dmv:theorypaymentfailed', function()
+RegisterNetEvent('qb-dmv:theorypaymentfailed', function()
     local amount = Config.Amount['theoretical']/2
 	local _source = source
 	local Player = QBCore.Functions.GetPlayer(_source)
@@ -12,8 +11,11 @@ AddEventHandler('qb-dmv:theorypaymentfailed', function()
 end)
 
 --Event to Remove Money and Add Item upon successful attempt at theoritical test
-RegisterServerEvent('qb-dmv:theorypaymentpassed')
-AddEventHandler('qb-dmv:theorypaymentpassed', function()
+RegisterNetEvent('qb-dmv:theorypaymentpassed', function()
+	local _source = source
+	local Player = QBCore.Functions.GetPlayer(_source)
+    local license = true
+    local info = {}
     if Config.DriversTest then
         local info = {}
         local _source = source
@@ -52,8 +54,10 @@ AddEventHandler('qb-dmv:theorypaymentpassed', function()
     end
 end)
 
-RegisterServerEvent('qb-dmv:driverpaymentpassed')
-AddEventHandler('qb-dmv:driverpaymentpassed', function ()
+RegisterNetEvent('qb-dmv:driverpaymentpassed', function ()
+    local src = source
+    local Player = QBCore.Functions.GetPlayer(src)
+    local info = {}
     if Config.DriversTest then
         local info = {}
         local _source = source
@@ -79,8 +83,7 @@ AddEventHandler('qb-dmv:driverpaymentpassed', function ()
     end
 end)
 
-RegisterServerEvent('qb-dmv:driverpaymentfailed')
-AddEventHandler('qb-dmv:driverpaymentfailed', function ()
+RegisterNetEvent('qb-dmv:driverpaymentfailed', function ()
     local amount = Config.Amount['driving']/2
     local _source = source
     local Player = QBCore.Functions.GetPlayer(_source)
