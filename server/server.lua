@@ -58,7 +58,7 @@ AddEventHandler('qb-dmv:driverpaymentpassed', function ()
         local info = {}
         local _source = source
         local Player = QBCore.Functions.GetPlayer(_source)
-        local licenseTable = Player.PlayerData.metadata['licene']
+        local licenseTable = Player.PlayerData.metadata['licences']
         info.citizenid = Player.PlayerData.citizenid
         info.firstname = Player.PlayerData.charinfo.firstname
         info.lastname = Player.PlayerData.charinfo.lastname
