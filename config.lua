@@ -1,5 +1,7 @@
 Config = {}
 
+Config.NotifyType = 'qbcore'                                --(qbcore | okok)<--This is the 2 options. Right now only supports QBCore:Notify or okokNotify
+
 Config.PaymentType = 'cash'                                 -- 'cash' or 'bank' What account to use for payment
 Config.DriversTest = true                                   --[[False = Do not have to take the drivers test to get a Drivers License(will give drivers_license after 
                                                                 questionairre.) True = Requires you to take Drivers Test to get driver_license]]
@@ -15,6 +17,7 @@ Config.Ped = {                                              --Will Spawn this pe
     gendernumber = 4                                        -- 4 = male 5 = female
 	},
 }
+
 Config.FadeIn = true                                        -- Do you want to ped to fade in as you get closer?
 Config.GiveItem = true                                      -- true = will give item after passing. False = will require players to go to city hall to accuire item
 
@@ -39,14 +42,14 @@ Config.Blip = {                                             -- Blip Config
 }
 
 Config.VehicleModels = {
-  driver = 'adder',                                         -- Car to spawn with Driver's Test
+  driver = 'sultan',                                         -- Car to spawn with Driver's Test
   cdl = 'stockade'                                          -- Truck to spawn with CDL Test
 }
 
 Config.SpeedLimits = {                                      -- Speed Limits in each zone
-  residence = 50,
-  town      = 80,
-  freeway   = 120
+  residence = 35,
+  town      = 55,
+  freeway   = 80
 }
 
 Config.CheckPoints = {                                      -- Each Cheackpoint for the Drivers Test
