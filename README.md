@@ -1,7 +1,14 @@
-# esx_dmvschool converted to QBCore with added details
+## esx_dmvschool converted to QBCore with added details
  We all know the old dmvschool from esx. Well welcome it to QBCore framework with a few new details.
 
-# Installation
+## Installation
+
+# MAKE SURE TO REMOVE -MAIN FROM THE END OF THE FOLDER NAME AFTER DOWNLOADING!
+Anytime you rename a folder that has html, css, and js files, go into the .js files and find anything that says https://'FOLDERNAME'/ and make sure that where i put 'FOLDERNAME' is the same as the name of the scripts root folder. In this case qb-dmv. If it says qb-dmv-main. Then remove the -main. If you don't follow this, the UI for that script will break or not work at all.
+So its always a safe bet to remove the -main from any scripts downloaded from github.
+
+I have fixed this script so regardless of the name of the qb-dmv folder name the UI will still work but again, still a good idea and go the safe route.
+
 Insert the below item into the shared.lua of qb-core
 ```
 ['permit']						 = {['name'] = 'permit',						['label'] = 'Driving Permit',			['weight'] = 0,			['type'] = 'item',		['image'] = 'id_card.png',				['unique'] = true,		['useable'] = true,		['shouldClose'] = false,   ['combinable'] = nil,   ['description'] = 'A Driving permit to show you can drive a vehicle as long as you have a passenger'},
