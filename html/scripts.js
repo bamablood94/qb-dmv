@@ -86,11 +86,11 @@ window.addEventListener('message', function (event) {
 
 // Handle Button Presses
 $(".btnQuestion").click(function () {
-	$.post('https://qb-dmv/question', JSON.stringify({}));
+	$.post(`https://${GetParentResourceName()}/question`, JSON.stringify({}));
 });
 
 $(".btnClose").click(function () {
-	$.post('https://qb-dmv/close', JSON.stringify({}));
+	$.post(`https://${GetParentResourceName()}/close`, JSON.stringify({}));
 	userAnswer = [];
 	goodAnswer = [];
 	questionUsed = [];
@@ -98,7 +98,7 @@ $(".btnClose").click(function () {
 });
 
 $(".btnKick").click(function () {
-	$.post('https://qb-dmv/kick', JSON.stringify({}));
+	$.post(`https://${GetParentResourceName()}/kick`, JSON.stringify({}));
 	userAnswer = [];
 	goodAnswer = [];
 	questionUsed = [];
