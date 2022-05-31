@@ -1,14 +1,14 @@
 Config = {}
 
-Config.NotifyType = 'qbcore'                                --(qbcore | okok)<--This is the 2 options. Right now only supports QBCore:Notify or okokNotify
+Config.NotifyType = 'qbcore'                                 --(qbcore | okok)<--This is the 2 options. Right now only supports QBCore:Notify or okokNotify
 
-Config.PaymentType = 'cash'                                 -- 'cash' or 'bank' What account to use for payment
-Config.DriversTest = true                                   --[[False = Do not have to take the drivers test to get a Drivers License(will give drivers_license after 
+Config.PaymentType = 'cash'                                  -- 'cash' or 'bank' What account to use for payment
+Config.DriversTest = true                                    --[[False = Do not have to take the drivers test to get a Drivers License(will give drivers_license after 
                                                                 questionairre.) True = Requires you to take Drivers Test to get driver_license]]
-Config.SpeedMultiplier = 2.236936                           --KM/H = 3.6 MPH = 2.236936
+Config.SpeedMultiplier = 2.236936                            --KM/H = 3.6 MPH = 2.236936
 Config.MaxErrors       = 10
-Config.UseTarget       = true                               -- True = Spawns a Ped to use qb-target with. False = Will use exports['qb-core']:DrawText or DrawText3Ds function depending on Config.UseNewQB
-Config.UseNewQB        = true                               -- If Not Using Target then if your QB files aren't updated to use exports['qb-core']:DrawText then make this false. If you'd rather use the exports['qb-core']:DrawText than use Target then make this true and make Config.UseTarget = false
+Config.UseTarget       = true                                -- True = Spawns a Ped to use qb-target with. False = Will use exports['qb-core']:DrawText or DrawText3Ds function depending on Config.UseNewQB
+Config.UseNewQB        = true                                -- If Not Using Target then if your QB files aren't updated to use exports['qb-core']:DrawText then make this false. If you'd rather use the exports['qb-core']:DrawText than use Target then make this true and make Config.UseTarget = false
 
 
 Config.TargetOptions = {
@@ -17,7 +17,7 @@ Config.TargetOptions = {
   invincible = true,
   blockevents = true,
   options = {
-    icon = 'fa-solid fa-car-burst',             -- 'fas fa-car-bump'
+    icon = 'fa-solid fa-car-burst',
     label = 'Open DMV',
   }
 }

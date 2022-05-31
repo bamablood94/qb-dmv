@@ -106,7 +106,27 @@ RegisterNetEvent('qb-dmv:Notify', function (msg, time, type, title)
 end)
 
 RegisterNetEvent('qb-dmv:client:dmvoptions', function ()
-  DMVOptions()
+  --DMVOptions()
+  local drive = Config.DriversTest
+  if CurrentTest == 'drive' then
+    TriggerEvent('qb-dmv:Notify', 'You\'re already taking the driving test.', 3000, 'error', 'Already Taking Test')
+  else
+    QBCore.Functions.TriggerCallback('qb-dmv:server:permitdata', function (permit)
+      if permit then
+        OpenMenu('theoritical')
+      else
+        QBCore.Functions.TriggerCallback('qb-dmv:server:licensedata', function (license)
+          if license then
+            if drive then
+              OpenMenu('driver')
+            else
+              TriggerEvent('qb-dmv:Notify', 'You already took your tests! Go to the City Hall to buy your license', 3000, 'info', 'Already took the test')
+            end
+          end
+        end)
+      end
+    end)
+  end
 end)
 ---------------------------------------
             -- FUNCTIONS --
@@ -182,26 +202,6 @@ function StopDriveTest(success)
   
 end
 
--- Opens Theroritical menu if permit = false in database
---[[function OpenMenu()
-  exports['qb-menu']:openMenu({
-    {
-      header = "DMV School",
-      isMenuHeader = true,
-    },
-    {
-      header = "Start Theoretical Test",
-      txt = "$"..Config.Amount['theoretical'].."",
-      params = {
-        event = 'qb-dmv:startquiz',
-        args = {
-          CurrentTest = 'theory'
-        }
-      }
-    }
-  })
-end]]
-
 -- Opens Driving Test Menu if driver = false in database
 function OpenMenu(menu)
   if menu == 'theoritical' then
@@ -248,7 +248,7 @@ function OpenMenu(menu)
   end
 end
 
-function DMVOptions()
+--[[function DMVOptions()
   local drive = Config.DriversTest
   if CurrentTest == 'drive' then
     TriggerEvent('qb-dmv:Notify', 'You\'re already taking the driving test.', 3000, 'error', 'Already Taking Test')
@@ -269,7 +269,7 @@ function DMVOptions()
       end
     end)
   end
-end
+end]]
 ---------------------------------------
             -- THREADS --
 ---------------------------------------
@@ -385,7 +385,8 @@ CreateThread( function ()
       if IsControlJustPressed(0, 38) then
         sleep = 1000
         exports['qb-core']:KeyPressed()
-        DMVOptions()
+        --DMVOptions()
+        TriggerEvent('qb-dmv:client:dmvoptions')
       end
     end
     Wait(sleep)
