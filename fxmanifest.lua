@@ -4,14 +4,20 @@ game 'gta5'
 author 'Bama94'
 description 'DMV School for QBCore'
 
+shared_scripts {
+  '@PolyZone/client.lua',
+  '@PolyZone/CircleZone.lua',
+  --'@PolyZone/shared/locale.lua',
+  --'locale/en.lua',                -- replace with desired language
+  'config.lua'
+}
+
 client_scripts { 
-    "client/client.lua",
-    "config.lua"
+    "client/*.lua"
     }
     
 server_scripts { 
-    "server/server.lua",
-    "config.lua"
+    "server/*.lua"
 }
 
 ui_page 'html/ui.html'
