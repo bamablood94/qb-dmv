@@ -16,7 +16,7 @@ AddEventHandler('QBCore:Client:OnPlayerLoaded', function()
     Player = QBCore.Functions.GetPlayerData()
 end)
 
--- Opens qb-menu to select dmv options
+-- Opens Theroritical menu if permit = false in database
 function OpenMenu()
     exports['qb-menu']:openMenu({
       {
@@ -36,6 +36,7 @@ function OpenMenu()
     })
 end
 
+-- Opens Driving Test Menu if driver = false in database
 function OpenMenu2()
   exports['qb-menu']:openMenu({
     {
@@ -61,6 +62,7 @@ function OpenMenu2()
     }
   })
 end
+
 -- Event to put in qb-menu to start driving test
 RegisterNetEvent('qb-dmv:startdriver', function()
         CurrentTest = 'drive'
@@ -80,7 +82,7 @@ RegisterNetEvent('qb-dmv:startdriver', function()
             TriggerServerEvent('qb-vehicletuning:server:SaveVehicleProps', QBCore.Functions.GetVehicleProperties(veh))
             LastVehicleHealth = GetVehicleBodyHealth(veh)
             CurrentVehicle = veh
-            QBCore.Functions.Notify('You are taking the Driving test')
+            TriggerEvent('qb-dmv:Notify', 'You are taking the driving test.', 3000, 'success', 'Taking Driving Test')
         end, Config.Location['spawn'], false)
 end)
 
@@ -101,6 +103,36 @@ AddEventHandler('qb-dmv:startquiz', function ()
 
 end)
 
+--Event For Notification Type
+RegisterNetEvent('qb-dmv:Notify', function (msg, time, type, title)
+  local notify = Config.NotifyType
+  if type == 'info' then
+    if notify == 'qbcore' then
+      type = 'primary'
+    elseif notify == 'okok' then
+      type = type
+    end
+  elseif type == 'warning' then
+    if notify == 'qbcore' then
+      type = 'error'
+    elseif notify == 'okok' then
+      type = type
+    end
+  end
+  if notify == 'qbcore' then
+    TriggerEvent('QBCore:Notify', msg, type, time)
+    --QBCore.Functions.Notify(msg, type, time)
+  elseif notify == 'okok' then
+    exports['okokNotify']:Alert(title, msg, time, type)
+  else
+    TriggerEvent('chat:addMessage', {
+      color = {255, 0, 0},
+      multiline = false,
+      args = {title, msg}
+    })
+  end
+end)
+
 -- When stopping/finishing theoritical test
 function StopTheoryTest(success) 
     CurrentTest = nil
@@ -109,10 +141,10 @@ function StopTheoryTest(success)
     })
     SetNuiFocus(false)
     if success then
-      QBCore.Functions.Notify('You passed your test!', 'success')
+      TriggerEvent('qb-dmv:Notify', 'You passed your test!', 3000, 'success', 'Passed')
       TriggerServerEvent('qb-dmv:theorypaymentpassed')
     else
-      QBCore.Functions.Notify('You failed the test!', 'error')
+      TriggerEvent('qb-dmv:Notify', 'You failed the test!', 3000, 'error', 'Failed')
       TriggerServerEvent('qb-dmv:theorypaymentfailed')
     end
 end
@@ -122,13 +154,13 @@ function StopDriveTest(success)
     local playerPed = PlayerPedId()
     local veh = GetVehiclePedIsIn(playerPed)
     if success then
+      TriggerEvent('qb-dmv:Notify', 'You passed the driving test!', 3000, 'success', 'Passed')
       TriggerServerEvent('qb-dmv:driverpaymentpassed')
-      QBCore.Functions.Notify('You passed the Drving Test!')
       QBCore.Functions.DeleteVehicle(veh)
       CurrentTest = nil
     elseif success == false then
       TriggerServerEvent('qb-dmv:driverpaymentfailed')
-      QBCore.Functions.Notify('You Failed the Driving Test!')
+      TriggerEvent('qb-dmv:Notify', 'You failed the driving test, please try again.', 3000, 'success', 'Failed')
       CurrentTest = nil
       RemoveBlip(CurrentBlip)
       QBCore.Functions.DeleteVehicle(veh)
@@ -195,8 +227,8 @@ Citizen.CreateThread(function()
                       if not IsAboveSpeedLimit then
                           DriveErrors       = DriveErrors + 1
                           IsAboveSpeedLimit = true
-                          QBCore.Functions.Notify('Driving too fast',"error")
-                          QBCore.Functions.Notify("Errors:"..tostring(DriveErrors).."/" ..Config.MaxErrors, "error")
+                          TriggerEvent('qb-dmv:Notify', 'You\'re driving too fast. Slow down', 3000, 'warning', 'Watch your speed!')
+                          TriggerEvent('qb-dmv:Notify', 'Errors: '..tostring(DriveErrors)..' / '..Config.MaxErrors, 3000, 'warning', 'Error')
                       end
                   end
               end
@@ -206,8 +238,8 @@ Citizen.CreateThread(function()
               local health = GetVehicleBodyHealth(vehicle)
               if health < LastVehicleHealth then
                   DriveErrors = DriveErrors + 1
-                  QBCore.Functions.Notify('You Damaged the Vehicle')
-                  QBCore.Functions.Notify("Errors:"..tostring(DriveErrors).."/" ..Config.MaxErrors, "error")
+                  TriggerEvent('qb-dmv:Notify', 'You damaged the vehicle', 3000, 'warning', 'Damaged the Vehicle')
+                  TriggerEvent('qb-dmv:Notify', 'Errors: '..tostring(DriveErrors)..' / '..Config.MaxErrors, 3000, 'warning', 'Error!')
                   LastVehicleHealth = health
               end
               if DriveErrors >= Config.MaxErrors then
@@ -285,16 +317,16 @@ Citizen.CreateThread(function ()
             if dist <= 1.5 then
               if CurrentTest ~= 'drive' then
                 if IsControlJustReleased(0, 46) then
-                  QBCore.Functions.TriggerCallback('qb-dmv:server:menu', function (permit)
+                  QBCore.Functions.TriggerCallback('qb-dmv:server:permitdata', function (permit)
                       if permit == false then
-                          QBCore.Functions.TriggerCallback('qb-dmv:server:menu2', function (license)
+                          QBCore.Functions.TriggerCallback('qb-dmv:server:licensedata', function (license)
                               if license then
                                   if drive then
                                       Wait(10)
                                       OpenMenu2()
                                   end
                               else
-                                QBCore.Functions.Notify("You already took your tests! Go to City Hall to buy your License.")
+                                TriggerEvent('qb-dmv:Notify', 'You already took your tests! Go to the City Hall to buy your license.', 3000, 'info', 'Already took the Test')
                               end
                           end)
                       else
@@ -304,7 +336,7 @@ Citizen.CreateThread(function ()
                   end)
                 end
               elseif CurrentTest == 'drive' and IsControlJustReleased(0, 46) then
-                QBCore.Functions.Notify("You\'re already Taking the Drivers Test.")
+                TriggerEvent('qb-dmv:Notify', 'You\'re already taking the driving test.', 3000, 'error', 'Already Taking Test')
               end
             end
         end
