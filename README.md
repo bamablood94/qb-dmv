@@ -1,4 +1,4 @@
-# ESX_DMVSchool Converted to QBCore. With Many new features
+# ESX DMVSchool Converted to QBCore. With Many new features
 We all know the old dmvschool from esx right? Well welcome it to QBCore Framework with a few added details.
  
 ## If Config.UseNewQB = true
