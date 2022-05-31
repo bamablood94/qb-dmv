@@ -22,9 +22,6 @@ Config.TargetOptions = {
   }
 }
 
-<<<<<<< Updated upstream
-Config.FadeIn = true                                        -- Do you want to ped to fade in as you get closer?
-=======
 Config.Location = {
   ['marker'] = vector3(215.31, -1398.99, 30.58),           --Location of Blip for DMV School and Location of Start Marker if Config.UseNewQB = false
   ['spawn'] = vector4(236.08, -1401.41, 30.58, 265.06),    -- Location to spawn vehicle upon starting Drivers Test
@@ -37,7 +34,6 @@ Config.Location = {
   ['radius'] = 5.0,                                         -- If Config.UseNewQB = true and Config.UseTarget = false then this is how far away you have to be from the above coordinates.
 }
 
->>>>>>> Stashed changes
 Config.GiveItem = true                                      -- true = will give item after passing. False = will require players to go to city hall to accuire item
 
 Config.Amount = {
