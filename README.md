@@ -1,13 +1,18 @@
-## esx_dmvschool converted to QBCore with added details
- We all know the old dmvschool from esx. Well welcome it to QBCore framework with a few new details.
+# ESX DMVSchool Converted to QBCore. With Many new features
+We all know the old dmvschool from esx right? Well welcome it to QBCore Framework with a few added details.
+ 
+## If Config.UseNewQB = true
+This uses the new QBCore export for DrawText
+![This is an image](https://i.imgur.com/7kEKN84.png)
+## If Config.UseNewQB = false
+This uses a function that has been around to draw a marker for a specific location
+![This is an image](https://i.imgur.com/mMYYUlH.png)
+
+## If you use Config.UseTarget the above 2 configs does not matter
+![This is an image](https://i.imgur.com/9BqL4oj.png)
+
 
 ## Installation
-
-# MAKE SURE TO REMOVE -MAIN FROM THE END OF THE FOLDER NAME AFTER DOWNLOADING!
-Anytime you rename a folder that has html, css, and js files, go into the .js files and find anything that says https://'FOLDERNAME'/ and make sure that where i put 'FOLDERNAME' is the same as the name of the scripts root folder. In this case qb-dmv. If it says qb-dmv-main. Then remove the -main. If you don't follow this, the UI for that script will break or not work at all.
-So its always a safe bet to remove the -main from any scripts downloaded from github.
-
-I have fixed this script so regardless of the name of the qb-dmv folder name the UI will still work but again, still a good idea and go the safe route.
 
 Insert the below item into the shared.lua of qb-core
 ```
@@ -15,7 +20,8 @@ Insert the below item into the shared.lua of qb-core
 ```
 
 If you want to give players an id_card instead then go into the server.lua and replace any instance of permit to id_card and don't worry about adding the above line.
-Update:(you will have to add the license to the table for exsisting players as it wont auto update.) -- atleast to my knowledge
+Update:(you will have to add permit to the players table in the metadata column for exsisting players as it wont auto update. This means this script looks for permit to be true/false in the license portion of the metadata column on which options to give you. So if you pass the theoritical test it changes permit to true in the metadata column, so you can then do the driving test) -- atleast to my knowledge
+
 
 Open qb-core/server/players.lua and find:
 
@@ -225,6 +231,10 @@ Player will be teleported back to the DMV once MaxErrors has been reached.
 Theoritcal Test UI has been updated and looks different.
 
 Added ability to only have to take Theoritcal Test(Config.DriversTest) if it is set to false then players will only have to take Theoritcal test to get a Driver's License. Set to True to make players take driving test to get a drivers license.
+
+Implemented Target and QBCores new export for DrawText
+
+Added a config to use okokNotify or QBCore:Notify
 
 Maybe others that I can't think of at the moment.
 
