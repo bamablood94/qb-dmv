@@ -232,6 +232,10 @@ Theoritcal Test UI has been updated and looks different.
 
 Added ability to only have to take Theoritcal Test(Config.DriversTest) if it is set to false then players will only have to take Theoritcal test to get a Driver's License. Set to True to make players take driving test to get a drivers license.
 
+Implemented Target and QBCores new export for DrawText
+
+Added a config to use okokNotify or QBCore:Notify
+
 Maybe others that I can't think of at the moment.
 
 # Planned Details
