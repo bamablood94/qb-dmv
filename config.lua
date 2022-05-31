@@ -7,18 +7,18 @@ Config.DriversTest = true                                   --[[False = Do not h
                                                                 questionairre.) True = Requires you to take Drivers Test to get driver_license]]
 Config.SpeedMultiplier = 2.236936                           --KM/H = 3.6 MPH = 2.236936
 Config.MaxErrors       = 10
-Config.UseTarget       = true                               -- True = Spawns a Ped to use qb-target with. False = Will use exports['qb-core']:DrawText or DrawText3Ds function depending on Config.UseNewQB
+Config.UseTarget       = false                             -- True = Spawns a Ped to use qb-target with. False = Will use exports['qb-core']:DrawText or DrawText3Ds function depending on Config.UseNewQB
 Config.UseNewQB        = true                               -- If Not Using Target then if your QB files aren't updated to use exports['qb-core']:DrawText then make this false. If you'd rather use the exports['qb-core']:DrawText than use Target then make this true and make Config.UseTarget = false
 
 
 Config.TargetOptions = {
-  minusOne = true,
-  freeze = true,
-  invincible = true,
-  blockevents = true,
-  options = {
-    icon = 'fa-solid fa-car-burst',             -- 'fas fa-car-bump'
-    label = 'Open DMV',
+  minusOne = true,                                        -- Gets the Coords you copied from qb-adminmenu and minuses 1 from the z coordinate to put the ped on the floor instead of floating in the air. Best to leave this true
+  freeze = true,                                          -- Freezes ped in place so nothing can move him. 
+  invincible = true,                                      -- Can't Kill Ped
+  blockevents = true,                                     -- Blocks other Events from showing up that isn't in the export for this script
+  options = { 
+    icon = 'fa-solid fa-car-burst',                       -- Icon to show up for Target Option
+    label = 'Open DMV',                                   -- Text to show up for Target Option
   }
 }
 
@@ -29,7 +29,7 @@ Config.Location = {
   ['useZ'] = true,                                         -- Use Z coord for Config.Loacation['coords']. Best to leave this true
 
   ['ped'] = {
-    ['model'] = 'a_m_m_indian_01',                          -- Ped to spawn if Config.UseTarget is true.
+    ['model'] = 's_m_y_cop_01',                             -- Ped to spawn if Config.UseTarget is true.
   },
   ['radius'] = 5.0,                                         -- If Config.UseNewQB = true and Config.UseTarget = false then this is how far away you have to be from the above coordinates.
 }

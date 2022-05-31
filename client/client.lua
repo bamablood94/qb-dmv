@@ -9,13 +9,14 @@ local CurrentCheckPoint = 0
 local CurrentZoneType   = nil
 local inDMV = false
 
+------------- OnPlayerLoaded Event ---------------------
 RegisterNetEvent('QBCore:Client:OnPlayerLoaded')
 AddEventHandler('QBCore:Client:OnPlayerLoaded', function()
   isLoggedIn = true
   Player = QBCore.Functions.GetPlayerData()
 end)
 
---Page Selections changing to different page of UI for theoritical quiz
+----------- NUI Callbacks for LUA to JS -----------------
 RegisterNUICallback('question', function(data, cb)
     SendNUIMessage({
       openSection = 'question'
@@ -36,7 +37,7 @@ end)
 ---------------------------------------
             -- EVENTS --
 ---------------------------------------
--- Event to put in qb-menu to start driving test
+
 RegisterNetEvent('qb-dmv:startdriver', function()
   CurrentTest = 'drive'
   DriveErrors = 0
@@ -59,9 +60,6 @@ RegisterNetEvent('qb-dmv:startdriver', function()
   end, Config.Location['spawn'], false)
 end)
 
-
-
--- Event for qb-menu to run to start quiz
 RegisterNetEvent('qb-dmv:startquiz')
 AddEventHandler('qb-dmv:startquiz', function ()
   CurrentTest = 'theory'
@@ -75,7 +73,6 @@ AddEventHandler('qb-dmv:startquiz', function ()
   end)
 end)
 
---Event For Notification Type
 RegisterNetEvent('qb-dmv:Notify', function (msg, time, type, title)
   local notify = Config.NotifyType
   if type == 'info' then
@@ -108,11 +105,11 @@ end)
 RegisterNetEvent('qb-dmv:client:dmvoptions', function ()
   DMVOptions()
 end)
+
 ---------------------------------------
             -- FUNCTIONS --
 ---------------------------------------
 
------------------DrawText3Ds Function-------------------
 DrawText3Ds = function(x,y,z, text)
   local onScreen,_x,_y=World3dToScreen2d(x,y,z)
   local factor = #text / 370
@@ -129,7 +126,6 @@ DrawText3Ds = function(x,y,z, text)
   DrawRect(_x,_y + 0.0125, 0.015 + factor, 0.03, 0, 0, 0, 120)
 end
 
------------------DrawMissionText Function-------------------
 function DrawMissionText(msg, time)
   ClearPrints()
   SetTextEntry_2('STRING')
@@ -137,12 +133,10 @@ function DrawMissionText(msg, time)
   DrawSubtitleTimed(time, 1)
 end
 
------------------SetCurrentZoneType Function-------------------
 function SetCurrentZoneType(type)
   CurrentZoneType = type
 end
 
--- When stopping/finishing theoritical test
 function StopTheoryTest(success) 
   CurrentTest = nil
   SendNUIMessage({
@@ -158,7 +152,6 @@ function StopTheoryTest(success)
   end
 end
 
---Stop Drive Test
 function StopDriveTest(success)
   local playerPed = PlayerPedId()
   local veh = GetVehiclePedIsIn(playerPed)
@@ -182,27 +175,6 @@ function StopDriveTest(success)
   
 end
 
--- Opens Theroritical menu if permit = false in database
---[[function OpenMenu()
-  exports['qb-menu']:openMenu({
-    {
-      header = "DMV School",
-      isMenuHeader = true,
-    },
-    {
-      header = "Start Theoretical Test",
-      txt = "$"..Config.Amount['theoretical'].."",
-      params = {
-        event = 'qb-dmv:startquiz',
-        args = {
-          CurrentTest = 'theory'
-        }
-      }
-    }
-  })
-end]]
-
--- Opens Driving Test Menu if driver = false in database
 function OpenMenu(menu)
   if menu == 'theoritical' then
     exports['qb-menu']:openMenu({
@@ -274,7 +246,6 @@ end
             -- THREADS --
 ---------------------------------------
 
---Block UI
 CreateThread(function ()
   while true do
       Wait(10)
@@ -290,7 +261,6 @@ CreateThread(function ()
   end
 end)
 
---Blips
 CreateThread(function ()
   blip = AddBlipForCoord(Config.Location['marker'].x, Config.Location['marker'].y, Config.Location['marker'].z)
   SetBlipSprite(blip, Config.Blip.Sprite)
@@ -317,44 +287,44 @@ CreateThread( function ()
       end)
     else
       while true do
-        Wait(0)
         local drive = Config.DriversTest
         local ped = PlayerPedId()
         local pos = GetEntityCoords(ped)
         local dist = GetDistanceBetweenCoords(pos,Config.Location['marker'].x, Config.Location['marker'].y, Config.Location['marker'].z, true)
         if dist <= 6.0 then
-            local marker ={
-                ['x'] = Config.Location['marker'].x,
-                ['y'] = Config.Location['marker'].y,
-                ['z'] = Config.Location['marker'].z
-            }
-            DrawText3Ds(marker['x'], marker['y'], marker['z'], "[E] Open Menu")
-            if dist <= 1.5 then
-              if CurrentTest ~= 'drive' then
-                if IsControlJustReleased(0, 46) then
-                  QBCore.Functions.TriggerCallback('qb-dmv:server:permitdata', function (permit)
-                      if permit == false then
-                          QBCore.Functions.TriggerCallback('qb-dmv:server:licensedata', function (license)
-                              if license then
-                                  if drive then
-                                      Wait(10)
-                                      OpenMenu2()
-                                  end
-                              else
-                                TriggerEvent('qb-dmv:Notify', 'You already took your tests! Go to the City Hall to buy your license.', 3000, 'info', 'Already took the Test')
-                              end
-                          end)
-                      else
-                        Wait(10)
-                        OpenMenu()
-                      end
-                  end)
-                end
-              elseif CurrentTest == 'drive' and IsControlJustReleased(0, 46) then
-                TriggerEvent('qb-dmv:Notify', 'You\'re already taking the driving test.', 3000, 'error', 'Already Taking Test')
+          local marker ={
+              ['x'] = Config.Location['marker'].x,
+              ['y'] = Config.Location['marker'].y,
+              ['z'] = Config.Location['marker'].z
+          }
+          DrawText3Ds(marker['x'], marker['y'], marker['z'], "[E] Open Menu")
+          if dist <= 1.5 then
+            if CurrentTest ~= 'drive' then
+              if IsControlJustReleased(0, 46) then
+                QBCore.Functions.TriggerCallback('qb-dmv:server:permitdata', function (permit)
+                    if permit == false then
+                        QBCore.Functions.TriggerCallback('qb-dmv:server:licensedata', function (license)
+                            if license then
+                                if drive then
+                                    Wait(10)
+                                    OpenMenu2()
+                                end
+                            else
+                              TriggerEvent('qb-dmv:Notify', 'You already took your tests! Go to the City Hall to buy your license.', 3000, 'info', 'Already took the Test')
+                            end
+                        end)
+                    else
+                      Wait(10)
+                      OpenMenu()
+                    end
+                end)
               end
+            elseif CurrentTest == 'drive' and IsControlJustReleased(0, 46) then
+              TriggerEvent('qb-dmv:Notify', 'You\'re already taking the driving test.', 3000, 'error', 'Already Taking Test')
             end
+          end
         end
+        Wait(0)
       end
     end
   else
