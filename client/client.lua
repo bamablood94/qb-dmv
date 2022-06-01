@@ -302,6 +302,7 @@ CreateThread( function ()
           inDMV = true
           exports['qb-core']:DrawText('[E] Open DMV')
         else
+          inDMV = false
           exports['qb-core']:HideText()
         end
       end)
@@ -327,7 +328,7 @@ CreateThread( function ()
                             if license then
                                 if drive then
                                     Wait(10)
-                                    OpenMenu2()
+                                    OpenMenu('driver')
                                 end
                             else
                               TriggerEvent('qb-dmv:Notify', 'You already took your tests! Go to the City Hall to buy your license.', 3000, 'info', 'Already took the Test')
@@ -335,7 +336,7 @@ CreateThread( function ()
                         end)
                     else
                       Wait(10)
-                      OpenMenu()
+                      OpenMenu('theoritical')
                     end
                 end)
               end
@@ -375,7 +376,6 @@ CreateThread( function ()
       if IsControlJustPressed(0, 38) then
         sleep = 1000
         exports['qb-core']:KeyPressed()
-        --DMVOptions()
         TriggerEvent('qb-dmv:client:dmvoptions')
       end
     end
