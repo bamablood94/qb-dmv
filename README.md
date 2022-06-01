@@ -11,10 +11,13 @@ This uses a function that has been around to draw a marker for a specific locati
 ## If you use Config.UseTarget the above 2 configs does not matter
 ![This is an image](https://i.imgur.com/9BqL4oj.png)
 
+## First you will need the MLO for the driving school
+You can find the MLO here:
+https://forum.cfx.re/t/mlo-driving-school-interior/1466079
 
-## Installation
+# Installation
 
-Insert the below item into the shared.lua of qb-core
+## Insert Item into QBCore/Shared/Items.lua:
 ```
 ['permit']						 = {['name'] = 'permit',						['label'] = 'Driving Permit',			['weight'] = 0,			['type'] = 'item',		['image'] = 'id_card.png',				['unique'] = true,		['useable'] = true,		['shouldClose'] = false,   ['combinable'] = nil,   ['description'] = 'A Driving permit to show you can drive a vehicle as long as you have a passenger'},
 ```
@@ -23,7 +26,7 @@ If you want to give players an id_card instead then go into the server.lua and r
 Update:(you will have to add permit to the players table in the metadata column for exsisting players as it wont auto update. This means this script looks for permit to be true/false in the license portion of the metadata column on which options to give you. So if you pass the theoritical test it changes permit to true in the metadata column, so you can then do the driving test) -- atleast to my knowledge
 
 
-Open qb-core/server/players.lua and find:
+## Open qb-core/server/players.lua and find:
 
 ```
 PlayerData.metadata['licences'] = PlayerData.metadata['licences'] or {
@@ -41,9 +44,11 @@ PlayerData.metadata['licences'] = PlayerData.metadata['licences'] or {
         ['permit'] = false
     }
 ```
-Open qb-core/shared/main.lua and find ```QBShared.StarterItems``` and remove the driver license line.
+## Open qb-core/shared/main.lua
+Fine ```QBShared.StarterItems``` and remove the driver license line.
 
-Open qb-cityhall/client/main.lua and replace
+## Open qb-cityhall/client/main.lua
+Replace this:
 ```
 local idTypes = {
     ["id_card"] = {
@@ -61,7 +66,7 @@ local idTypes = {
 }
 ```
 
-with
+With This:
 
 ```
 local idTypes = {
@@ -84,7 +89,8 @@ local idTypes = {
 }
 ```
 
-and replace
+Then Replace This:
+
 ```
 RegisterNUICallback('requestLicenses', function(data, cb)
     local PlayerData = QBCore.Functions.GetPlayerData()
@@ -113,7 +119,9 @@ RegisterNUICallback('requestLicenses', function(data, cb)
     cb(availableLicenses)
 end)
 ```
-with
+
+With This:
+
 ```
 RegisterNUICallback('requestLicenses', function(data, cb)
     local PlayerData = QBCore.Functions.GetPlayerData()
@@ -146,7 +154,7 @@ RegisterNUICallback('requestLicenses', function(data, cb)
 end)
 ```
 
-And last go to qb-cityhall/server/main.lua and replace:
+## And last go to qb-cityhall/server/main.lua and replace:
 ```
 RegisterServerEvent('qb-cityhall:server:requestId')
 AddEventHandler('qb-cityhall:server:requestId', function(identityData)
@@ -176,7 +184,9 @@ AddEventHandler('qb-cityhall:server:requestId', function(identityData)
     TriggerClientEvent('inventory:client:ItemBox', src, QBCore.Shared.Items[identityData.item], 'add')
 end)
 ```
-with
+
+With This:
+
 
 ```
 RegisterNetEvent('qb-cityhall:server:requestId', function(identityData)
