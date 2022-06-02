@@ -14,6 +14,7 @@ This uses a function that has been around to draw a marker for a specific locati
 ## First you will need the MLO for the driving school
 You can find the MLO here:
 https://forum.cfx.re/t/mlo-driving-school-interior/1466079
+### DISCLAIMER: This is not my MLO. I just found it on cfx forums and used it as the basis for this script
 
 # Installation
 
