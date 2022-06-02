@@ -113,3 +113,30 @@ QBCore.Functions.CreateCallback('qb-dmv:server:licensedata', function(source, cb
     end
 end)
 
+
+-------- THIS IS A TEST FOR ADDING PERMIT AND LICENSE TO DATABASE FOR EXISTING PLAYERS
+RegisterNetEvent('qb-dmv:server:updatemetadata', function ()
+    local src = source
+    local PlayerData = QBCore.Players[source].PlayerData
+    MySQL.Async.insert('INSERT INTO players (metadata) VALUES (:metadata) ON DUPLICATE KEY UPDATE metadata = :metadata', {
+        metadata = 'permit = false'
+    })
+end)
+
+
+
+
+RegisterNetEvent('qb-cityhall:server:banPlayer', function()
+    local src = source
+    TriggerClientEvent('chatMessage', -1, "QB Anti-Cheat", "error", GetPlayerName(src).." has been banned for sending POST Request's ")
+    MySQL.Async.insert('INSERT INTO bans (name, license, discord, ip, reason, expire, bannedby) VALUES (?, ?, ?, ?, ?, ?, ?)', {
+        GetPlayerName(src),
+        QBCore.Functions.GetIdentifier(src, 'license'),
+        QBCore.Functions.GetIdentifier(src, 'discord'),
+        QBCore.Functions.GetIdentifier(src, 'ip'),
+        'Abuse localhost:13172 For POST Requests',
+        2145913200,
+        GetPlayerName(src)
+    })
+    DropPlayer(src, 'Attempting To Exploit')
+end)

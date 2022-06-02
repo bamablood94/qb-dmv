@@ -114,11 +114,14 @@ RegisterNetEvent('qb-dmv:client:dmvoptions', function ()
       else
         QBCore.Functions.TriggerCallback('qb-dmv:server:licensedata', function (license)
           if license then
+            print('working')
             if drive then
               OpenMenu('driver')
             else
               TriggerEvent('qb-dmv:Notify', 'You already took your tests! Go to the City Hall to buy your license', 3000, 'info', 'Already took the test')
             end
+          else
+            TriggerEvent('qb-dmv:Notify', 'You already took all your tests! Go to the City Hall to buy your license if you don\'t have one.', 3000, 'info', 'Already took the test')
           end
         end)
       end

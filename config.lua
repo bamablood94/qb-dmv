@@ -7,7 +7,7 @@ Config.DriversTest = true                                    --[[False = Do not 
                                                                 questionairre.) True = Requires you to take Drivers Test to get driver_license]]
 Config.SpeedMultiplier = 2.236936                            --KM/H = 3.6 MPH = 2.236936
 Config.MaxErrors       = 10
-Config.UseTarget       = false                             -- True = Spawns a Ped to use qb-target with. False = Will use exports['qb-core']:DrawText or DrawText3Ds function depending on Config.UseNewQB
+Config.UseTarget       = true                            -- True = Spawns a Ped to use qb-target with. False = Will use exports['qb-core']:DrawText or DrawText3Ds function depending on Config.UseNewQB
 Config.UseNewQB        = true                               -- If Not Using Target then if your QB files aren't updated to use exports['qb-core']:DrawText then make this false. If you'd rather use the exports['qb-core']:DrawText than use Target then make this true and make Config.UseTarget = false
 
 
