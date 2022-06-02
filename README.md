@@ -17,6 +17,8 @@ https://forum.cfx.re/t/mlo-driving-school-interior/1466079
 
 # Installation
 
+## QB-Core Script:
+
 ## Insert Item into QBCore/Shared/Items.lua:
 ```
 ['permit']						 = {['name'] = 'permit',						['label'] = 'Driving Permit',			['weight'] = 0,			['type'] = 'item',		['image'] = 'id_card.png',				['unique'] = true,		['useable'] = true,		['shouldClose'] = false,   ['combinable'] = nil,   ['description'] = 'A Driving permit to show you can drive a vehicle as long as you have a passenger'},
@@ -26,28 +28,183 @@ If you want to give players an id_card instead then go into the server.lua and r
 Update:(you will have to add permit to the players table in the metadata column for exsisting players as it wont auto update. This means this script looks for permit to be true/false in the license portion of the metadata column on which options to give you. So if you pass the theoritical test it changes permit to true in the metadata column, so you can then do the driving test) -- atleast to my knowledge
 
 
+
 ## Open qb-core/server/players.lua and find:
+```
+PlayerData.metadata['licences'] = PlayerData.metadata['licences'] or {
+    ['driver'] = true,
+    ['business'] = false,
+    ['weapon'] = false,
+}
+```
+Replace With:
+```
+PlayerData.metadata['licences'] = PlayerData.metadata['licences'] or {
+    ['driver'] = false,
+    ['business'] = false,
+    ['weapon'] = false,
+    ['permit'] = false
+}
+```
 
-```
-PlayerData.metadata['licences'] = PlayerData.metadata['licences'] or {
-        ['driver'] = true,
-        ['business'] = false,
-        ['weapon'] = false,
-    }
-```
-and replace with:
-```
-PlayerData.metadata['licences'] = PlayerData.metadata['licences'] or {
-        ['driver'] = false,
-        ['business'] = false,
-        ['weapon'] = false,
-        ['permit'] = false
-    }
-```
 ## Open qb-core/shared/main.lua
-Fine ```QBShared.StarterItems``` and remove the driver license line.
+Find ```QBShared.StarterItems``` and remove the driver license line
 
-## Open qb-cityhall/client/main.lua
+#### The Above Code is for both NEW and OLD QBCore
+
+## QB-Cityhall Script:
+Cityhall Script has been updated. So with this being said, Below will be how to install it both ways. If you open the ```config.lua``` and don't see the below code, then you have the old styl qbcore which means you have to go further down this readme to find the part that you need to do.
+
+I will be starting with the new version of the cityhall script followed by the old version. So if you are running the old version, then scroll on till you see OLD QBCORE.
+
+## NEW QBCORE:
+
+### Open qb-cityhall/config.lua
+Replace This:
+```
+Config.Cityhalls = {
+    { -- Cityhall 1
+        coords = vec3(-265.0, -963.6, 31.2),
+        showBlip = true,
+        blipData = {
+            sprite = 487,
+            display = 4,
+            scale = 0.65,
+            colour = 0,
+            title = "City Services"
+        },
+        licenses = {
+            ["id_card"] = {
+                label = "ID Card",
+                cost = 50,
+            },
+            ["driver_license"] = {
+                label = "Driver License",
+                cost = 50,
+                metadata = "driver"
+            },
+            ["weaponlicense"] = {
+                label = "Weapon License",
+                cost = 50,
+                metadata = "weapon"
+            }
+        }
+    },
+}
+```
+WITH THIS:
+```
+Config.Cityhalls = {
+    { -- Cityhall 1
+        coords = vec3(-265.0, -963.6, 31.2),
+        showBlip = true,
+        blipData = {
+            sprite = 487,
+            display = 4,
+            scale = 0.65,
+            colour = 0,
+            title = "City Services"
+        },
+        licenses = {
+            ["id_card"] = {
+                label = "ID Card",
+                cost = 50,
+            },
+            ["driver_license"] = {
+                label = "Driver License",
+                cost = 50,
+                metadata = "driver"
+            },
+            ["weaponlicense"] = {
+                label = "Weapon License",
+                cost = 50,
+                metadata = "weapon"
+            },
+            ['permit'] = {
+                label = "Permit",
+                cost = 50,
+                metadata = 'permit'
+            }
+        }
+    },
+}
+```
+
+### Open qb-cityhall/server/main.lua
+Replace This:
+```
+RegisterNetEvent('qb-cityhall:server:requestId', function(item, hall)
+    local src = source
+    local Player = QBCore.Functions.GetPlayer(src)
+    if not Player then return end
+    local itemInfo = Config.Cityhalls[hall].licenses[item]
+    if not Player.Functions.RemoveMoney("cash", itemInfo.cost) then return TriggerClientEvent('QBCore:Notify', src, ('You don\'t have enough money on you, you need %s cash'):format(itemInfo.cost), 'error') end
+    local info = {}
+    if item == "id_card" then
+        info.citizenid = Player.PlayerData.citizenid
+        info.firstname = Player.PlayerData.charinfo.firstname
+        info.lastname = Player.PlayerData.charinfo.lastname
+        info.birthdate = Player.PlayerData.charinfo.birthdate
+        info.gender = Player.PlayerData.charinfo.gender
+        info.nationality = Player.PlayerData.charinfo.nationality
+    elseif item == "driver_license" then
+        info.firstname = Player.PlayerData.charinfo.firstname
+        info.lastname = Player.PlayerData.charinfo.lastname
+        info.birthdate = Player.PlayerData.charinfo.birthdate
+        info.type = "Class C Driver License"
+    elseif item == "weaponlicense" then
+        info.firstname = Player.PlayerData.charinfo.firstname
+        info.lastname = Player.PlayerData.charinfo.lastname
+        info.birthdate = Player.PlayerData.charinfo.birthdate
+    else
+        return DropPlayer(src, 'Attempted exploit abuse')
+    end
+    if not Player.Functions.AddItem(item, 1, nil, info) then return end
+    TriggerClientEvent('inventory:client:ItemBox', src, QBCore.Shared.Items[item], 'add')
+end)
+```
+WITH THIS:
+```
+RegisterNetEvent('qb-cityhall:server:requestId', function(item, hall)
+    local src = source
+    local Player = QBCore.Functions.GetPlayer(src)
+    if not Player then return end
+    local itemInfo = Config.Cityhalls[hall].licenses[item]
+    if not Player.Functions.RemoveMoney("cash", itemInfo.cost) then return TriggerClientEvent('QBCore:Notify', src, ('You don\'t have enough money on you, you need %s cash'):format(itemInfo.cost), 'error') end
+    local info = {}
+    if item == "id_card" then
+        info.citizenid = Player.PlayerData.citizenid
+        info.firstname = Player.PlayerData.charinfo.firstname
+        info.lastname = Player.PlayerData.charinfo.lastname
+        info.birthdate = Player.PlayerData.charinfo.birthdate
+        info.gender = Player.PlayerData.charinfo.gender
+        info.nationality = Player.PlayerData.charinfo.nationality
+    elseif item == "driver_license" then
+        info.firstname = Player.PlayerData.charinfo.firstname
+        info.lastname = Player.PlayerData.charinfo.lastname
+        info.birthdate = Player.PlayerData.charinfo.birthdate
+        info.type = "Class C Driver License"
+    elseif item == "weaponlicense" then
+        info.firstname = Player.PlayerData.charinfo.firstname
+        info.lastname = Player.PlayerData.charinfo.lastname
+        info.birthdate = Player.PlayerData.charinfo.birthdate
+    elseif item == "permit" then
+        info.firstname = Player.PlayerData.charinfo.firstname
+        info.lastname = Player.PlayerData.charinfo.lastname
+        info.birthdate = Player.PlayerData.charinfo.birthdate
+    else
+        return DropPlayer(src, 'Attempted exploit abuse')
+    end
+    if not Player.Functions.AddItem(item, 1, nil, info) then return end
+    TriggerClientEvent('inventory:client:ItemBox', src, QBCore.Shared.Items[item], 'add')
+end)
+```
+If you are using new QBCore, You are done with installation. At the bottom of this readme is how to contact me for support or any future plans or added details to the script.do
+    
+end
+## OLD QBCORE
+
+### Open qb-cityhall/client/main.lua
 Replace this:
 ```
 local idTypes = {
@@ -154,74 +311,6 @@ RegisterNUICallback('requestLicenses', function(data, cb)
 end)
 ```
 
-## And last go to qb-cityhall/server/main.lua and replace:
-```
-RegisterServerEvent('qb-cityhall:server:requestId')
-AddEventHandler('qb-cityhall:server:requestId', function(identityData)
-    local src = source
-    local Player = QBCore.Functions.GetPlayer(src)
-    local info = {}
-    if identityData.item == "id_card" then
-        info.citizenid = Player.PlayerData.citizenid
-        info.firstname = Player.PlayerData.charinfo.firstname
-        info.lastname = Player.PlayerData.charinfo.lastname
-        info.birthdate = Player.PlayerData.charinfo.birthdate
-        info.gender = Player.PlayerData.charinfo.gender
-        info.nationality = Player.PlayerData.charinfo.nationality
-    elseif identityData.item == "driver_license" then
-        info.firstname = Player.PlayerData.charinfo.firstname
-        info.lastname = Player.PlayerData.charinfo.lastname
-        info.birthdate = Player.PlayerData.charinfo.birthdate
-        info.type = "Class C Driver License"
-    elseif identityData.item == "weaponlicense" then
-        info.firstname = Player.PlayerData.charinfo.firstname
-        info.lastname = Player.PlayerData.charinfo.lastname
-        info.birthdate = Player.PlayerData.charinfo.birthdate
-    end
-
-    Player.Functions.AddItem(identityData.item, 1, nil, info)
-
-    TriggerClientEvent('inventory:client:ItemBox', src, QBCore.Shared.Items[identityData.item], 'add')
-end)
-```
-
-With This:
-
-
-```
-RegisterNetEvent('qb-cityhall:server:requestId', function(identityData)
-    local src = source
-    local Player = QBCore.Functions.GetPlayer(src)
-    local info = {}
-    if identityData.item == "id_card" then
-        info.citizenid = Player.PlayerData.citizenid
-        info.firstname = Player.PlayerData.charinfo.firstname
-        info.lastname = Player.PlayerData.charinfo.lastname
-        info.birthdate = Player.PlayerData.charinfo.birthdate
-        info.gender = Player.PlayerData.charinfo.gender
-        info.nationality = Player.PlayerData.charinfo.nationality
-    elseif identityData.item == "driver_license" then
-        info.firstname = Player.PlayerData.charinfo.firstname
-        info.lastname = Player.PlayerData.charinfo.lastname
-        info.birthdate = Player.PlayerData.charinfo.birthdate
-        info.type = "Class C Driver License"
-    elseif identityData.item == "weaponlicense" then
-        info.firstname = Player.PlayerData.charinfo.firstname
-        info.lastname = Player.PlayerData.charinfo.lastname
-        info.birthdate = Player.PlayerData.charinfo.birthdate
-    elseif identityData.item == "permit" then
-        info.firstname = Player.PlayerData.charinfo.firstname
-        info.lastname = Player.PlayerData.charinfo.lastname
-        info.birthdate = Player.PlayerData.charinfo.birthdate
-        info.type = "Drivers Permit"
-    end
-
-    Player.Functions.AddItem(identityData.item, 1, nil, info)
-    TriggerClientEvent('inventory:client:ItemBox', src, QBCore.Shared.Items[identityData.item], 'add')
-    Player.Functions.RemoveMoney("cash", 50)
-end)
-```
-
 # New Details
 
 Added Permit to database defaults false. So now qb-dmv won't look to see if they have the item in their inventory rather the database to see if true or false. So they can't spam taking the test.
@@ -258,9 +347,12 @@ If you have any questions or any problems please don't hesitate to message me or
 
 Bama94#1994
 
+My City Discord: https://discord.gg/Z6pP5Ke2t9
+
 QBCore Discord: https://discord.gg/pKUZvJBxq4
 
 # Credits
 
 ConnorTheDev#5982 - Credit for finding the way to add to the database.(I was unaware of this method)
+
 cambrey1#2143 - Credit for sending me the files to find the reason behind the UI getting stuck on screen after failing test and trying again.
