@@ -345,6 +345,7 @@ Make it so players must be in starting vehicle to complete the drivers test
 # Contact Me
 
 If you have any questions or any problems please don't hesitate to message me or ask on the qbcore discord. We are happy to help.
+If you have any fixes for something, just put in a PR Request if you have any issues, your more than welcome to put in a ticket issue here, but It's less likely for me to respond
 
 Bama94#1994
 
