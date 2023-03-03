@@ -85,7 +85,6 @@ Config.NewCheckPoints = { -- Can now determine different locations for each type
       {
         pos = vector3(255.139, -1400.731, 29.537),
         txt = 'Go to the next point! Speed Limit: ~y~'..Config.SpeedLimits['residence']..' '..Config.SpeedMultiplier,
-        endpoint = true
       },
       {
         pos = vector3(271.874, -1370.574, 30.932),
@@ -177,7 +176,6 @@ Config.NewCheckPoints = { -- Can now determine different locations for each type
       {
         pos = vector3(255.139, -1400.731, 29.537),
         txt = 'Go to the next point! Speed Limit: ~y~'..Config.SpeedLimits['residence']..' '..Config.SpeedMultiplier,
-        endpoint = true
       },
       {
         pos = vector3(271.874, -1370.574, 30.932),
@@ -269,7 +267,6 @@ Config.NewCheckPoints = { -- Can now determine different locations for each type
       {
         pos = vector3(255.139, -1400.731, 29.537),
         txt = 'Go to the next point! Speed Limit: ~y~'..Config.SpeedLimits['residence']..' '..Config.SpeedMultiplier,
-        endpoint = true
       
       },
       {
