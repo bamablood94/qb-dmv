@@ -1,45 +1,46 @@
 Config = {}
 
-Config.NotifyType = 'qbcore'                                 --(qbcore | okok)<--This is the 2 options. Right now only supports QBCore:Notify or okokNotify
-
-Config.PaymentType = 'cash'                                  -- 'cash' or 'bank' What account to use for payment
-Config.DriversTest = true                                    --[[False = Do not have to take the drivers test to get a Drivers License(will give drivers_license after 
-                                                                questionairre.) True = Requires you to take Drivers Test to get driver_license]]
-Config.SpeedMultiplier = 2.236936                            --KM/H = 3.6 MPH = 2.236936
-Config.MaxErrors       = 10
-Config.UseTarget       = true                            -- True = Spawns a Ped to use qb-target with. False = Will use exports['qb-core']:DrawText or DrawText3Ds function depending on Config.UseNewQB
-Config.UseNewQB        = true                               -- If Not Using Target then if your QB files aren't updated to use exports['qb-core']:DrawText then make this false. If you'd rather use the exports['qb-core']:DrawText than use Target then make this true and make Config.UseTarget = false
+Config.UseTarget = true                                       -- (true | false)
+Config.FuelResource = 'LegacyFuel'                            -- (LegacyFuel | lj-fuel | cdn-fuel)<--Which fuel reource are you using?
+Config.VehPlate = 'DMV '..math.random(100, 999)               -- Plate Text that comes on a DMV vehicle when spawned
+Config.CommandName = 'resetlicense'                           -- Command to reset a players license meta back to false. (permit | driver | cdl | bike)
 
 
-Config.TargetOptions = {
-  minusOne = true,                                        -- Gets the Coords you copied from qb-adminmenu and minuses 1 from the z coordinate to put the ped on the floor instead of floating in the air. Best to leave this true
-  freeze = true,                                          -- Freezes ped in place so nothing can move him. 
-  invincible = true,                                      -- Can't Kill Ped
-  blockevents = true,                                     -- Blocks other Events from showing up that isn't in the export for this script
-  options = { 
-    icon = 'fa-solid fa-car-burst',                       -- Icon to show up for Target Option
-    label = 'Open DMV',                                   -- Text to show up for Target Option
-  }
-}
+Config.PaymentType = 'cash'                                   -- (cash | bank) What account to use for payment
+Config.DriversTest = true                                     -- (true | false) Take the physical Driving Test or Not
+Config.SpeedMultiplier = 'mph'                                -- ('mph' | 'kmh')
+Config.MaxErrors       = 100                                   -- Max Amount of Errors for Driving Test before Failing.
+Config.PlayerCoordsAfterTest = vector4(222.85, -1392.84, 30.59, 310.38) -- Teleport Players to Coords after passing/failing drivers test.
 
-Config.Location = {
-  ['marker'] = vector3(215.31, -1398.99, 30.58),           --Location of Blip for DMV School and Location of Start Marker if Config.UseNewQB = false
-  ['spawn'] = vector4(236.08, -1401.41, 30.58, 265.06),    -- Location to spawn vehicle upon starting Drivers Test
-  ['coords'] = vector4(214.6, -1400.15, 30.58, 324.82),    -- Location of Ped if Config.UseTarget True or Loction of QB:DrawText Area if Config.UseTarget = false and Config.UseNewQB = true
-  ['useZ'] = true,                                         -- Use Z coord for Config.Loacation['coords']. Best to leave this true
+Config.BikeEndorsement = true                                 -- (true | false) Adds "Motorcycle Endorsement" to Drivers License else uses a seperate Bike License
 
-  ['ped'] = {
-    ['model'] = 's_m_y_cop_01',                             -- Ped to spawn if Config.UseTarget is true.
+Config.Locations = {  -- Coords and Ped to Spawn
+  [1] = {
+    pedModel = `s_m_y_cop_01`, 
+    coords = vector4(214.6, -1400.15, 30.58, 324.82),
+    blip = {
+      showblip = true,
+      blipsprite = 380,
+      blipscale = 0.7,
+      blipcolor = 1,
+      label = 'DMV School'
+    }
   },
-  ['radius'] = 5.0,                                         -- If Config.UseNewQB = true and Config.UseTarget = false then this is how far away you have to be from the above coordinates.
 }
 
-Config.GiveItem = true                                      -- true = will give item after passing. False = will require players to go to city hall to accuire item
+Config.GiveItem = true                                      -- (true | false) If false then player will have to go to city hall to get the licenses
+Config.Items = {                                            -- if config.giveitem = true then use this to give the item for each test
+  ['driver'] = 'driver_license',
+  ['cdl'] = 'cdl_license',
+  ['bike'] = 'bike_license'
+}
+
 
 Config.Amount = {
-    ['theoretical'] = 50,                                   --theoretical test payment amount(If Config.DriversTest = false then the theoritical test will go to the drivers test amount.)
-    ['driving']     = 150,                                  --Drivers Test Payment Amount
-    ['cdl']         = 250                                   --CDL Test Payment Amount
+    ['theoritical'] = 50,                                     --theoretical test payment amount(If Config.DriversTest = false then the theoritical test will go to the drivers test amount.)
+    ['driver']      = 150,                                     --Drivers Test Payment Amount
+    ['cdl']         = 250,                                    --CDL Test Payment Amount
+    ['bike']        = 125                                     -- Bike Test Payment
 }
 
 Config.Blip = {                                             -- Blip Config
@@ -48,12 +49,13 @@ Config.Blip = {                                             -- Blip Config
   Color = 1,
   Scale = 0.8,
   ShortRange = true,
-  BlipName = 'DMV School'
+  BlipName = 'DMV'
 }
 
-Config.VehicleModels = {
-  driver = 'sultan',                                         -- Car to spawn with Driver's Test
-  cdl = 'stockade'                                          -- Truck to spawn with CDL Test
+Config.VehicleModels = {                                    -- Vehicle to Spawn with Driver Test
+  ['driver'] = 'sultan',
+  ['cdl'] = 'stockade',
+  ['bike'] = 'sanchez'
 }
 
 Config.SpeedLimits = {                                      -- Speed Limits in each zone
@@ -62,151 +64,282 @@ Config.SpeedLimits = {                                      -- Speed Limits in e
   freeway   = 80
 }
 
-Config.CheckPoints = {                                      -- Each Cheackpoint for the Drivers Test
+Config.NewCheckPoints = { -- Can now determine different locations for each type of test
+  ['driver'] = { 
+    ['startingzone'] = 'residence', -- What zone is the player starting in? (residence | freeway | town)
+    ['startingpoint'] = vector4(222.41, -1387.88, 30.11, 270.57), -- Where the vehicle spawns
 
-  {
-    Pos = {x = 255.139, y = -1400.731, z = 29.537},
-    Action = function(playerPed, vehicle, setCurrentZoneType)
-      DrawMissionText('go to the next point! Speed Limit: ~y~' .. Config.SpeedLimits['residence'] .. 'mph', 5000)
-    end
+    ['checkpoints'] = { -- Each Check Point for the Test
+      -- EXAMPLE:
+      --[[
+        {
+          pos = (vector3) Where the marker will be,
+          txt = The text that will show when the player has reached this marker,
+          playsound = (true | false) Will Play a hud sound when reached this marker
+          freezePlayer = (true | false) Will freeze the player and vehicle for 3 seconds at this marker,
+          txt2 = Text that will show up 3 seconds after the first txt.
+          currentzone = determines a new zone(residence | town | freeway) This is so the speed Check will be correct
+          endpoint = (true) -- Only use this for the LAST checkpoint for the Test as this will delete the Car and teleport the player to Config.PlayerCoordsAfterTest
+        }
+      ]]
+      {
+        pos = vector3(255.139, -1400.731, 29.537),
+        txt = 'Go to the next point! Speed Limit: ~y~'..Config.SpeedLimits['residence']..' '..Config.SpeedMultiplier,
+        endpoint = true
+      },
+      {
+        pos = vector3(271.874, -1370.574, 30.932),
+        txt = 'Go to next point',
+      },
+      {
+        pos = vector3(234.907, -1345.385, 29.542),
+        txt = '~r~Stop~s~ for the pedestrian ~y~crossing',
+        playsound = true,
+        freezePlayer = true,
+        txt2 = '~g~Good~s~, continue.'
+      },
+      {
+        pos = vector3(217.821, -1410.520, 28.292),
+        txt = '~r~Stop~s~ and look ~y~Left~s~. Speed Limit:~y~ '..Config.SpeedLimits['town']..' '..Config.SpeedMultiplier,
+        playsound = true,
+        freezePlayer = true,
+        txt2 = '~g~Good~s~, turn right and follow the line.',
+        currentzone = 'town'
+      },
+      {
+        pos = vector3(178.550, -1401.755, 27.725),
+        txt = 'Go to the next point.',
+      },
+      {
+        pos = vector3(113.160, -1365.276, 27.725),
+        txt = 'Go to the next point.',
+      },
+      {
+        pos = vector3(-73.542, -1364.335, 27.789),
+        txt = '~r~Stop~s~ for passing vehicles!',
+        playsound = true,
+        freezePlayer = true
+      },
+      {
+        pos = vector3(-355.143, -1420.282, 27.868),
+        txt = 'Go to the Next Point.'
+      },
+      {
+        pos = vector3(-439.148, -1417.100, 27.704),
+        txt = 'Go to the Next Point.',
+      },
+      {
+        pos = vector3(-453.790, -1444.726, 27.665),
+        txt = 'It\'s time to drive on the highway! Speed Limit:~y~ '..Config.SpeedLimits['freeway']..' '..Config.SpeedMultiplier,
+        playsound = true,
+        currentzone = 'freeway',
+      },
+      {
+        pos = vector3(-463.237, -1592.178, 37.519),
+        txt = 'Go to the Next Point.',
+      },
+      {
+        pos = vector3(-900.647, -1986.28, 26.109),
+        txt = 'Go to the Next Point.',
+      },
+      {
+        pos = vector3(1225.759, -1948.792, 38.718),
+        txt = 'Entered Town. Pay attention to you speed! Speed Limit:~y~ '..Config.SpeedLimits['town']..' '..Config.SpeedMultiplier,
+        currentzone = 'town',
+      },
+      {
+        pos = vector3(1163.603, -1841.771, 35.679),
+        txt = 'I\'m Impressed, but don\'t forget to stay ~r~ALERT~s~ whilst Driving.',
+      },
+      {
+        pos = vector3(235.283, -1398.329, 28.921),
+        endpoint = true,
+      }
+    }
   },
+  ['cdl'] = { 
+    ['startingzone'] = 'residence', -- What zone is the player starting in? (residence | freeway | town)
+    ['startingpoint'] = vector4(222.41, -1387.88, 30.11, 270.57), -- Where the vehicle spawns
 
-  {
-    Pos = {x = 271.874, y = -1370.574, z = 30.932},
-    Action = function(playerPed, vehicle, setCurrentZoneType)
-      DrawMissionText('Go to next point', 5000)
-    end
+    ['checkpoints'] = { -- Each Check Point for the Test
+      -- EXAMPLE:
+      --[[
+        {
+          pos = (vector3) Where the marker will be,
+          txt = The text that will show when the player has reached this marker,
+          playsound = (true | false) Will Play a hud sound when reached this marker
+          freezePlayer = (true | false) Will freeze the player and vehicle for 3 seconds at this marker,
+          txt2 = Text that will show up 3 seconds after the first txt.
+          currentzone = determines a new zone(residence | town | freeway) This is so the speed Check will be correct
+          endpoint = (true) -- Only use this for the LAST checkpoint for the Test as this will delete the Car and teleport the player to Config.PlayerCoordsAfterTest
+        }
+      ]]
+      {
+        pos = vector3(255.139, -1400.731, 29.537),
+        txt = 'Go to the next point! Speed Limit: ~y~'..Config.SpeedLimits['residence']..' '..Config.SpeedMultiplier,
+        endpoint = true
+      },
+      {
+        pos = vector3(271.874, -1370.574, 30.932),
+        txt = 'Go to next point',
+      },
+      {
+        pos = vector3(234.907, -1345.385, 29.542),
+        txt = '~r~Stop~s~ for the pedestrian ~y~crossing',
+        playsound = true,
+        freezePlayer = true,
+        txt2 = '~g~Good~s~, continue.'
+      },
+      {
+        pos = vector3(217.821, -1410.520, 28.292),
+        txt = '~r~Stop~s~ and look ~y~Left~s~. Speed Limit:~y~ '..Config.SpeedLimits['town']..' '..Config.SpeedMultiplier,
+        playsound = true,
+        freezePlayer = true,
+        txt2 = '~g~Good~s~, turn right and follow the line.',
+        currentzone = 'town'
+      },
+      {
+        pos = vector3(178.550, -1401.755, 27.725),
+        txt = 'Go to the next point.',
+      },
+      {
+        pos = vector3(113.160, -1365.276, 27.725),
+        txt = 'Go to the next point.',
+      },
+      {
+        pos = vector3(-73.542, -1364.335, 27.789),
+        txt = '~r~Stop~s~ for passing vehicles!',
+        playsound = true,
+        freezePlayer = true
+      },
+      {
+        pos = vector3(-355.143, -1420.282, 27.868),
+        txt = 'Go to the Next Point.'
+      },
+      {
+        pos = vector3(-439.148, -1417.100, 27.704),
+        txt = 'Go to the Next Point.',
+      },
+      {
+        pos = vector3(-453.790, -1444.726, 27.665),
+        txt = 'It\'s time to drive on the highway! Speed Limit:~y~ '..Config.SpeedLimits['freeway']..' '..Config.SpeedMultiplier,
+        playsound = true,
+        currentzone = 'freeway',
+      },
+      {
+        pos = vector3(-463.237, -1592.178, 37.519),
+        txt = 'Go to the Next Point.',
+      },
+      {
+        pos = vector3(-900.647, -1986.28, 26.109),
+        txt = 'Go to the Next Point.',
+      },
+      {
+        pos = vector3(1225.759, -1948.792, 38.718),
+        txt = 'Entered Town. Pay attention to you speed! Speed Limit:~y~ '..Config.SpeedLimits['town']..' '..Config.SpeedMultiplier,
+        currentzone = 'town',
+      },
+      {
+        pos = vector3(1163.603, -1841.771, 35.679),
+        txt = 'I\'m Impressed, but don\'t forget to stay ~r~ALERT~s~ whilst Driving.',
+      },
+      {
+        pos = vector3(235.283, -1398.329, 28.921),
+        endpoint = true,
+      }
+    }
   },
+  ['bike'] = { 
+    ['startingzone'] = 'residence', -- What zone is the player starting in? (residence | freeway | town)
+    ['startingpoint'] = vector4(222.41, -1387.88, 30.11, 270.57), -- Where the vehicle spawns
 
-  {
-    Pos = {x = 234.907, y = -1345.385, z = 29.542},
-    Action = function(playerPed, vehicle, setCurrentZoneType)
-      Citizen.CreateThread(function()
-        DrawMissionText('~r~Stop~s~ for the pedestrian ~y~crossing', 5000)
-        PlaySound(-1, 'RACE_PLACED', 'HUD_AWARDS', 0, 0, 1)
-        FreezeEntityPosition(vehicle, true)
-        Citizen.Wait(4000)
-        FreezeEntityPosition(vehicle, false)
-        DrawMissionText('~g~Good~s~, continue.', 5000)
-
-      end)
-    end
+    ['checkpoints'] = { -- Each Check Point for the Test
+      -- EXAMPLE:
+      --[[
+        {
+          pos = (vector3) Where the marker will be,
+          txt = The text that will show when the player has reached this marker,
+          playsound = (true | false) Will Play a hud sound when reached this marker
+          freezePlayer = (true | false) Will freeze the player and vehicle for 3 seconds at this marker,
+          txt2 = Text that will show up 3 seconds after the first txt.
+          currentzone = determines a new zone(residence | town | freeway) This is so the speed Check will be correct
+          endpoint = (true) -- Only use this for the LAST checkpoint for the Test as this will delete the Car and teleport the player to Config.PlayerCoordsAfterTest
+        }
+      ]]
+      {
+        pos = vector3(255.139, -1400.731, 29.537),
+        txt = 'Go to the next point! Speed Limit: ~y~'..Config.SpeedLimits['residence']..' '..Config.SpeedMultiplier,
+        endpoint = true
+      
+      },
+      {
+        pos = vector3(271.874, -1370.574, 30.932),
+        txt = 'Go to next point',
+      },
+      {
+        pos = vector3(234.907, -1345.385, 29.542),
+        txt = '~r~Stop~s~ for the pedestrian ~y~crossing',
+        playsound = true,
+        freezePlayer = true,
+        txt2 = '~g~Good~s~, continue.'
+      },
+      {
+        pos = vector3(217.821, -1410.520, 28.292),
+        txt = '~r~Stop~s~ and look ~y~Left~s~. Speed Limit:~y~ '..Config.SpeedLimits['town']..' '..Config.SpeedMultiplier,
+        playsound = true,
+        freezePlayer = true,
+        txt2 = '~g~Good~s~, turn right and follow the line.',
+        currentzone = 'town'
+      },
+      {
+        pos = vector3(178.550, -1401.755, 27.725),
+        txt = 'Go to the next point.',
+      },
+      {
+        pos = vector3(113.160, -1365.276, 27.725),
+        txt = 'Go to the next point.',
+      },
+      {
+        pos = vector3(-73.542, -1364.335, 27.789),
+        txt = '~r~Stop~s~ for passing vehicles!',
+        playsound = true,
+        freezePlayer = true
+      },
+      {
+        pos = vector3(-355.143, -1420.282, 27.868),
+        txt = 'Go to the Next Point.'
+      },
+      {
+        pos = vector3(-439.148, -1417.100, 27.704),
+        txt = 'Go to the Next Point.',
+      },
+      {
+        pos = vector3(-453.790, -1444.726, 27.665),
+        txt = 'It\'s time to drive on the highway! Speed Limit:~y~ '..Config.SpeedLimits['freeway']..' '..Config.SpeedMultiplier,
+        playsound = true,
+        currentzone = 'freeway',
+      },
+      {
+        pos = vector3(-463.237, -1592.178, 37.519),
+        txt = 'Go to the Next Point.',
+      },
+      {
+        pos = vector3(-900.647, -1986.28, 26.109),
+        txt = 'Go to the Next Point.',
+      },
+      {
+        pos = vector3(1225.759, -1948.792, 38.718),
+        txt = 'Entered Town. Pay attention to you speed! Speed Limit:~y~ '..Config.SpeedLimits['town']..' '..Config.SpeedMultiplier,
+        currentzone = 'town',
+      },
+      {
+        pos = vector3(1163.603, -1841.771, 35.679),
+        txt = 'I\'m Impressed, but don\'t forget to stay ~r~ALERT~s~ whilst Driving.',
+      },
+      {
+        pos = vector3(235.283, -1398.329, 28.921),
+        endpoint = true,
+      }
+    }
   },
-
-  {
-    Pos = {x = 217.821, y = -1410.520, z = 28.292},
-    Action = function(playerPed, vehicle, setCurrentZoneType)
-
-      setCurrentZoneType('town')
-
-      Citizen.CreateThread(function()
-        DrawMissionText('~r~Stop~s~ and look ~y~left~s~. Speed Limit:~y~ ' .. Config.SpeedLimits['town'] .. 'mph', 5000)
-        PlaySound(-1, 'RACE_PLACED', 'HUD_AWARDS', 0, 0, 1)
-        FreezeEntityPosition(vehicle, true)
-        Citizen.Wait(6000)
-        FreezeEntityPosition(vehicle, false)
-        DrawMissionText('~g~Good~s~, turn right and follow the line', 5000)
-      end)
-    end
-  },
-
-  {
-    Pos = {x = 178.550, y = -1401.755, z = 27.725},
-    Action = function(playerPed, vehicle, setCurrentZoneType)
-      DrawMissionText('watch the traffic and ~y~turn on your lights~s~!', 5000)
-    end
-  },
-
-  {
-    Pos = {x = 113.160, y = -1365.276, z = 27.725},
-    Action = function(playerPed, vehicle, setCurrentZoneType)
-      DrawMissionText('go to the next point!', 5000)
-    end
-  },
-
-  {
-    Pos = {x = -73.542, y = -1364.335, z = 27.789},
-    Action = function(playerPed, vehicle, setCurrentZoneType)
-      DrawMissionText('~r~Stop~s~ for passing vehicles!', 5000)
-      PlaySound(-1, 'RACE_PLACED', 'HUD_AWARDS', 0, 0, 1)
-      FreezeEntityPosition(vehicle, true)
-      Citizen.Wait(6000)
-      FreezeEntityPosition(vehicle, false)
-    end
-  },
-
-  {
-    Pos = {x = -355.143, y = -1420.282, z = 27.868},
-    Action = function(playerPed, vehicle, setCurrentZoneType)
-      DrawMissionText('go to the next point!', 5000)
-    end
-  },
-
-  {
-    Pos = {x = -439.148, y = -1417.100, z = 27.704},
-    Action = function(playerPed, vehicle, setCurrentZoneType)
-      DrawMissionText('go to the next point!', 5000)
-    end
-  },
-
-  {
-    Pos = {x = -453.790, y = -1444.726, z = 27.665},
-    Action = function(playerPed, vehicle, setCurrentZoneType)
-
-      setCurrentZoneType('freeway')
-
-      DrawMissionText('it\'s time to drive on the highway! Speed Limit:~y~ ' .. Config.SpeedLimits['freeway'] .. 'mph', 5000)
-      PlaySound(-1, 'RACE_PLACED', 'HUD_AWARDS', 0, 0, 1)
-    end
-  },
-
-  {
-    Pos = {x = -463.237, y = -1592.178, z = 37.519},
-    Action = function(playerPed, vehicle, setCurrentZoneType)
-      DrawMissionText('go to the next point!', 5000)
-    end
-  },
-
-  {
-    Pos = {x = -900.647, y = -1986.28, z = 26.109},
-    Action = function(playerPed, vehicle, setCurrentZoneType)
-      DrawMissionText('go to the next point!', 5000)
-    end
-  },
-
-  {
-    Pos = {x = 1225.759, y = -1948.792, z = 38.718},
-    Action = function(playerPed, vehicle, setCurrentZoneType)
-      DrawMissionText('go to the next point!', 5000)
-    end
-  },
-
-  {
-    Pos = {x = 1225.759, y = -1948.792, z = 38.718},
-    Action = function(playerPed, vehicle, setCurrentZoneType)
-
-      setCurrentZoneType('town')
-
-      DrawMissionText('entered town, pay attention to your speed! Speed Limit: ~y~' .. Config.SpeedLimits['town'] .. 'mph', 5000)
-    end
-  },
-
-  {
-    Pos = {x = 1163.603, y = -1841.771, z = 35.679},
-    Action = function(playerPed, vehicle, setCurrentZoneType)
-      DrawMissionText('i\'m impressed, but don\'t forget to stay ~r~alert~s~ whilst driving!', 5000)
-      PlaySound(-1, 'RACE_PLACED', 'HUD_AWARDS', 0, 0, 1)
-    end
-  },
-
-  {
-    Pos = {x = 235.283, y = -1398.329, z = 28.921},
-    Action = function(playerPed, vehicle, setCurrentZoneType)
-      function QBCore.Functions.DeleteVehicle(vehicle)
-        SetEntityAsMissionEntity(vehicle, true, true)
-        DeleteVehicle(vehicle)
-      end
-    end
-  },
-
 }
